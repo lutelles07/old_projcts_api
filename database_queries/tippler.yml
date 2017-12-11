@@ -1,0 +1,4 @@
+get_id_tippler: "SELECT * FROM SIGE_INTERFACE_NOTFIS_LOCKDOWN WHERE infl_tp_arquivo = '<tipo_arquivo>' AND rownum < 2"
+
+update_flag_leitura: "UPDATE SIGE_INTERFACE_NOTFIS_LOCKDOWN SET INFL_FLG_LEITURA = 'N',
+                      INFL_DT_LEITURA  = SYSDATE WHERE  INFL_ID_SEQUENCIAL = '<id>'"

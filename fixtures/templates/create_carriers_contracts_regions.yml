@@ -1,0 +1,60 @@
+#-------------------------------------------------------------------------------------------------
+#   T E M P L A T E    F O R   O N L Y    1   R E G I O N
+#-------------------------------------------------------------------------------------------------
+
+get_01_region:
+  regions:
+  - name: ITAQUERA
+    averageDistanceKm: 100
+    clearanceFee: true
+    transitTime: 1
+    megaRouteId: SP
+    returnTransitTime: 3
+    maxWeight: 34
+    cubage:
+    maxVolume: 6
+    status: A
+    reverseTransitTime:
+    carrierCode: SP-ZL
+    exchangeGatheringOnDelivery: true
+    trackingUpdate:
+      user: USER01
+      dateTime: '2016-10-06T00:00:00.000Z'
+
+#-------------------------------------------------------------------------------------------------
+#   T E M P L A T E    F O R   2   R E G I O N S
+#-------------------------------------------------------------------------------------------------
+get_02_regions:
+  regions:
+  - name: NOME TESTE REGIAO1
+    averageDistanceKm: 100
+    clearanceFee: true
+    transitTime: 1
+    megaRouteId: SP
+    returnTransitTime: 3
+    maxWeight: 34
+    cubage:
+    maxVolume: 6
+    status: A
+    reverseTransitTime:
+    carrierCode: SP-ZL
+    exchangeGatheringOnDelivery: true
+    trackingUpdate:
+      user: USER01
+      dateTime: '2016-10-06T00:00:00.000Z'
+  - name: NOME TESTE REGIAO2
+    averageDistanceKm: 100
+    clearanceFee: true
+    transitTime: 1
+    megaRouteId: SPN
+    returnTransitTime: 3
+    maxWeight: 34
+    cubage:
+    maxVolume: 6
+    status: A
+    reverseTransitTime:
+    carrierCode: SP-ZL
+    exchangeGatheringOnDelivery: true
+    trackingUpdate:
+      user: USER01
+      dateTime: '2016-10-06T00:00:00.000Z'

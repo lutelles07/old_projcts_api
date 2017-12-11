@@ -1,0 +1,33 @@
+create_contracs_b2b:
+  idCia: 1
+  idCliente: 5833397000116
+  numContrato: 12345678
+  numSubContrato: 12345678
+  situacao: A
+  tipoOperComl: 1
+  canalVenda: ITAU
+  tipoPedido: S
+  meioPagamentoPedido: 7
+  diaFixoBoleto: 10
+  pzPagamentoBoleto: 2
+  periodoFat: 1
+  pzDiaCorte: 1
+  pzEntrega: 5
+  filial: null
+  transportadora: null
+  contratoTransp: null
+  situacaoTransp: null
+  tipoEntrega: null
+  tipoPresente: null
+  limiteCred: 10
+  lote: N
+  logradouroCob: "Av Francisco Glicerio"
+  numeroCob: 666
+  compleCob: nenhum
+  bairroCob: Centro
+  cepCob: 13720000
+  cidadeCob: "SAO JOSE DO RIO PARDO"
+  zipCodeCob: null
+  ufCob: SP
+  paisCob: Brasil
+  idAgencia: 12233462000138

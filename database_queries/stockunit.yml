@@ -1,0 +1,69 @@
+get_from_list_stockunit: "SELECT E.ESTO_ID_ESTOQUE id, EAN.EAN_ID_EAN EAN,E.ESTO_ID_PLANTA PLANT,W.WARR_ID_WARRANTY WARRANTYID,E.ESTO_ID_LOCAL INVENTORYLOCATIONID
+                         FROM ESTOQUE    E,
+                          LOCAL      L,
+                          REFERENCIA R,
+                          WARRANTY   W,
+                          ITEM_GERAL I,
+                          LOTE       LT,
+                          EAN        EAN
+                     WHERE EAN.EAN_ID_SKU = I.ITEG_ID
+                        AND I.ITEG_ID = ESTO_ID_ITEM
+                        AND L.LOCA_ID_LOCAL = E.ESTO_ID_LOCAL
+                        AND E.ESTO_QT > 0
+                        AND E.ESTO_SITUACAO IN ('P', 'R', 'O', 'V', 'A')
+                        AND R.REFE_ID_REF = E.ESTO_ID_REF
+                        AND W.WARR_ID_WARRANTY = R.REFE_ID_WARRANTY
+                        AND W.WARR_ID_WARRANTY IN (4,7,10,15,18,19,45,65,70,75,80,90)
+                        AND E.ESTO_ID_LOTE = LT.LOTE_ID_LOTE
+                        AND ROWNUM < 100"
+
+
+get_stockunit_data:
+  "SELECT DISTINCT A.UNI_ESTQ, A.RG , A.DATA_VENCIMENTO , A.PLANTA ,
+                    A.ID_RESTRICAO , A.RESTRICAO , A.ID_ENDERECO , A.ENDERECO ,
+                    A.QT_DISPONIVEL , A.SITUACAO , NVL(A.DATA_ENTRADA_REVERSA, A.DATA_ARMAZENAGEM) DATA_ENTRADA_REVERSA,
+                    NVL(A.DATA_ARMAZENAGEM, A.DATA_ENTRADA_REVERSA) DATA_ARMAZENAGEM
+                   FROM (SELECT E.ESTO_ID_ESTOQUE UNI_ESTQ,
+                    1 || LPAD(E.ESTO_ID_ESTOQUE, 9, 0) RG,
+                    LT.LOTE_DT_VALIDADE DATA_VENCIMENTO,
+                     E.ESTO_ID_PLANTA PLANTA,
+                    W.WARR_ID_WARRANTY ID_RESTRICAO,
+                    W.WARR_NUMERO RESTRICAO,
+                    E.ESTO_ID_LOCAL ID_ENDERECO,
+                    L.LOCA_DESCRICAO ENDERECO,
+                    E.ESTO_QT QT_DISPONIVEL,
+                    E.ESTO_SITUACAO SITUACAO,
+                    TO_CHAR((SELECT M1.MOVI_DT_MOVIMENTO DT_ARMAZENAMENTO
+                              FROM MOVIMENTOS M1
+                             WHERE M1.MOVI_ID_MOVIMENTO =
+                                   (SELECT MIN(M2.MOVI_ID_MOVIMENTO)
+                                      FROM MOVIMENTOS M2, TRANSACAO T
+                                     WHERE M2.MOVI_ID_ESTOQUE = E.ESTO_ID_ESTOQUE
+                                       AND M2.MOVI_ID_TRANSACAO = T.TRAN_ID_TRANSACAO
+                                       AND T.TRAN_TP_TRAN = 'E')),
+                            'RRRR-MM-DD') DATA_ENTRADA_REVERSA,
+                    TO_CHAR((SELECT MAX(M.MOVI_DT_MOVIMENTO) DT_ENTRADA
+                              FROM MOVIMENTOS M, TRANSACAO T
+                             WHERE M.MOVI_ID_TRANSACAO = T.TRAN_ID_TRANSACAO
+                               AND T.TRAN_TP_TRAN = 'T'
+                               AND M.MOVI_ID_ESTOQUE = E.ESTO_ID_ESTOQUE
+                               AND M.MOVI_ID_REF = R.REFE_ID_REF),
+                            'RRRR-MM-DD') DATA_ARMAZENAGEM
+               FROM ESTOQUE    E,
+                    LOCAL      L,
+                    REFERENCIA R,
+                    WARRANTY   W,
+                   ITEM_GERAL I,
+                    LOTE       LT,
+                    EAN        EAN
+             WHERE EAN.EAN_ID_SKU = I.ITEG_ID
+                AND I.ITEG_ID = ESTO_ID_ITEM
+                AND L.LOCA_ID_LOCAL = E.ESTO_ID_LOCAL
+                AND E.ESTO_QT > 0
+                AND E.ESTO_SITUACAO IN ('P', 'R', 'O', 'V', 'A')
+                AND R.REFE_ID_REF = E.ESTO_ID_REF
+                AND W.WARR_ID_WARRANTY = R.REFE_ID_WARRANTY
+                AND W.WARR_ID_WARRANTY IN (4,7,10,15,18,19,45,65,70,75,80,90)
+                AND E.ESTO_ID_LOTE = LT.LOTE_ID_LOTE
+                AND E.ESTO_ID_ESTOQUE = <id>  ) A
+                ORDER BY A.UNI_ESTQ"

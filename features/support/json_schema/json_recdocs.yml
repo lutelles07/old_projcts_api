@@ -1,0 +1,200 @@
+{
+  "id": 99,
+  "distributionCenter": 1,
+  "status": "Liquidado",
+  "truck": {
+    "driver": "Manoel",
+    "licensePlate": "FRG1425"
+  },
+  "suppliers": [
+    61797924000740
+  ],
+  "receiptNote": [
+    {
+      "id": 171,
+      "orders": [
+        {
+          "id": 618,
+          "orderItems": [
+            {
+              "id": 1,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 30,
+              "returnedQuantity": 0,
+              "itemId": 4353,
+              "reason": null
+            },
+            {
+              "id": 2,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4323,
+              "reason": null
+            },
+            {
+              "id": 3,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4328,
+              "reason": null
+            },
+            {
+              "id": 4,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4363,
+              "reason": null
+            },
+            {
+              "id": 5,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4568,
+              "reason": null
+            },
+            {
+              "id": 6,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4563,
+              "reason": null
+            },
+            {
+              "id": 7,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4976,
+              "reason": null
+            },
+            {
+              "id": 8,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 10,
+              "returnedQuantity": 0,
+              "itemId": 4311,
+              "reason": null
+            },
+            {
+              "id": 9,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 10,
+              "returnedQuantity": 0,
+              "itemId": 4429,
+              "reason": null
+            },
+            {
+              "id": 10,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 10,
+              "returnedQuantity": 0,
+              "itemId": 4319,
+              "reason": null
+            },
+            {
+              "id": 11,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4331,
+              "reason": null
+            },
+            {
+              "id": 12,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4336,
+              "reason": null
+            },
+            {
+              "id": 13,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4305,
+              "reason": null
+            },
+            {
+              "id": 14,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4291,
+              "reason": null
+            },
+            {
+              "id": 15,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4978,
+              "reason": null
+            },
+            {
+              "id": 16,
+              "invoice": {
+                "number": 227695,
+                "serie": "1"
+              },
+              "receivedQuantity": 3,
+              "returnedQuantity": 0,
+              "itemId": 4979,
+              "reason": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

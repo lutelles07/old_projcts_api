@@ -1,0 +1,32 @@
+class RecDocsAPI
+
+  include HTTParty
+
+  base_uri ENVIRONMENT["server"]
+  format :json
+  headers 'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'X-tid'  => 'RecDocs - '+ DateTime.now.strftime("%FT%T")
+
+  def initialize(authentication)
+    @auth = {
+        username: AUTH[authentication]['username'],
+        password: AUTH[authentication]['password']
+    }
+  end
+
+  #==================================================================================================
+  # CONTRACT API
+  #==================================================================================================
+
+  def get_xtid(xtid, id)
+    self.class.headers 'X-tid' => xtid
+    self.class.get("/aldebaran-recdocs/recdocs/#{id}", :basic_auth => @auth)
+  end
+
+  def get(id)
+    #self.class.headers 'X-tid'  => 'RecDocs - '+ DateTime.now.strftime("%FT%T")
+    self.class.get("/aldebaran-recdocs/recdocs/#{id}", :basic_auth => @auth)
+  end
+
+end

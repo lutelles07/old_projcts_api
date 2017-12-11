@@ -1,0 +1,69 @@
+
+get_id:  "select DISTINCT rdoc.* from recebimento_documental rdoc where rdoc.redo_situacao <> 'C' and rownum < 500"
+
+get_id_data: "select distinct rdoc.redo_id_recdoc id,
+                fili.fili_id_filial distributioncenter,
+                noca.noca_id_terceiro suppliers,
+                decode(rdoc.redo_situacao,
+                       'C',
+                       'Cancelado',
+                       'L',
+                       'Liquidado',
+                       'Aberto') status,
+                cami.cami_motorista driver,
+                cami.cami_placa_veiculo licenseplate,
+                nrca_id_nr receiptnoteid,
+                nrpe.nrpe_num_ped orderid,
+                nrpe.nrpe_num_item_ped orderitemid,
+                noca.noca_num_nota_ref invoicenumber,
+                noca.noca_serie_ref invoiceserie,
+                (nvl(node.node_qt_uc,
+                     0) - nvl(node.node_qt_dev_uc,
+                               0)) receivedquantity,
+                nrpe.nrpe_id_item itemid,
+                motc.motc_nome reason
+                from recebimento_documental rdoc
+                join caminhao cami
+                  on rdoc.redo_id_recdoc = cami.cami_id_recdoc
+                and rdoc.redo_id_planta = cami.cami_id_planta
+                join planta plta
+                  on plta.plta_id_planta = cami.cami_id_planta
+                join filial fili
+                  on fili.fili_cgc = plta.plta_id_terceiro
+                left join nota_receb_cab nrca
+                  on rdoc.redo_id_recdoc = nrca.nrca_id_recdoc
+                and nrca.nrca_situacao != 'C'
+                left join caminhao_notas cano
+                  on cami.cami_id_caminhao = cano.cano_id_caminhao
+                and cano.cano_id_terceiro = plta.plta_id_terceiro
+                and cano.cano_num_nota = nrca.nrca_num_nota
+                and cano.cano_serie = nrca.nrca_serie
+                and cano.cano_id_fornec = nrca.nrca_id_terceiro
+                left join recm_nr_cabecalho noca
+                  on cano.cano_id_caminhao = noca.noca_id_caminhao
+                and noca.noca_id_cia = fili.fili_id_cia
+                and noca.noca_id_filial = fili.fili_id_filial
+                and cano.cano_id_fornec = noca.noca_id_terceiro
+                and nrca.nrca_num_nota = noca.noca_num_nota_ref
+                and nrca.nrca_serie = noca.noca_serie_ref
+                left join recm_nr_detalhes node
+                  on noca.noca_id_cia = node.node_id_cia
+                and noca.noca_id_filial = node.node_id_filial
+                and noca.noca_id_nr = node.node_id_nr
+                left join recm_nr_pedido nrpe
+                  on node.node_id_cia = nrpe.nrpe_id_cia
+                and node.node_id_filial = nrpe.nrpe_id_filial
+                and node.node_id_nr = nrpe.nrpe_id_nr
+                and node.node_num_item = nrpe.nrpe_num_item_nr
+                and node.node_id_item = nrpe.nrpe_id_item
+                left join nota_receb_det nrde
+                  on nrde.nrde_id_nr = nrca.nrca_id_nr
+                and nrde.nrde_id_item = nrpe.nrpe_id_item
+                and nrde.nrde_seq = nrpe.nrpe_num_item_nr
+                left join motivo_cancelamento motc
+                  on nrde.nrde_id_motivo = motc.motc_id_motivo
+              where rdoc.redo_id_recdoc = <recdoc_id>
+              order by orderid     asc,
+                        orderitemid asc"
+
+            

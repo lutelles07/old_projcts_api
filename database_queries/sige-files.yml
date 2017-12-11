@@ -1,0 +1,19 @@
+sige_arquivo_txt_cab_insert:      "insert into SWMART.sige_arquivo_txt_cab (satc_id,satc_caminho,satc_data_geracao,satc_arq_enviado,satc_tipo)
+                                   values (<sige_file_id>, '/wm/msaf/wtest_automation_file.txt',to_date('15-MAY-17','DD-MON-RR'),'N','W')"
+sige_arquivo_txt_det_insert:      "insert into SWMART.SIGE_ARQUIVO_TXT_DET (SATD_ID,SATD_SEQ,SATD_LINHA) values (<sige_file_id> ,<file_line>,'<file_line_content>')"
+
+sige_arquivo_txt_cab_select:      "select c.* from SWMART.sige_arquivo_txt_cab c where c.satc_id = <id>"
+
+sige_arquivo_txt_det_select:      "select * from SWMART.SIGE_ARQUIVO_TXT_DET D where D.SATD_ID = <id>"
+
+get_max_sige_file_id:             "select max(satc_id) from SWMART.sige_arquivo_txt_cab"
+
+sige_arquivo_txt_cab_update_type: "update SWMART.sige_arquivo_txt_cab c set c.satc_tipo = '<sige_file_type>' where c.satc_id = <id>"
+
+sige_arquivo_txt_cab_update:      "update SWMART.sige_arquivo_txt_cab set <sige_file_field> = '<sige_file_value>' where satc_id = <id>"
+
+sige_arquivo_txt_cab_delete:      "delete SWMART.SIGE_ARQUIVO_TXT_CAB C where C.SATC_ID = <id>"
+
+sige_arquivo_txt_det_delete:      "delete SWMART.SIGE_ARQUIVO_TXT_DET D where D.SATD_ID = <id>"
+
+sige_check_flag_leitura: "select * from sige_interface_notfis_lockdown where INFL_ID_SEQUENCIAL = '<id>'"

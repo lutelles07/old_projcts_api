@@ -1,0 +1,39 @@
+#-------------------------------------------------------------------------------------------------#
+#   T E M P L A T E    (A R R A Y   O C C U R S   1   T I M E )
+#-------------------------------------------------------------------------------------------------#
+create_invoice_01_occur:
+  debitNoteId:
+  totalValue:
+  invoicesAmount:
+  issueDate:
+  dueDate:
+  invoices:
+  - branchId:
+    invoiceNumber:
+    serie:
+    value:
+    operationType:
+    instanceId:
+
+#-------------------------------------------------------------------------------------------------#
+#   T E M P L A T E    (A R R A Y   O C C U R S   2   T I M E S)
+#-------------------------------------------------------------------------------------------------#
+create_invoice_02_occurs:
+  debitNoteId:
+  totalValue:
+  invoicesAmount:
+  issueDate:
+  dueDate:
+  invoices:
+  - branchId:
+    invoiceNumber:
+    serie:
+    value:
+    operationType:
+    instanceId:
+  - branchId:
+    invoiceNumber:
+    serie:
+    value:
+    operationType:
+    instanceId:

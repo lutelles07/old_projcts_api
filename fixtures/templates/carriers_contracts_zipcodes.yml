@@ -1,0 +1,48 @@
+#-------------------------------------------------------------------------------------------------
+#   T E M P L A T E    F O R   O N L Y    1   R E G I O N  - (Insert)
+#-------------------------------------------------------------------------------------------------
+create_01_region:
+  zipCodes:
+  - zipMin: 68900000
+    zipMax: 68900000
+    status: S
+    expirationDate: '2017-12-16T00:00:00.000Z'
+    comments: Observacao sobre a faixa de CEP 01
+    trackingUpdate:
+      user: USER01
+      dateTime: '2015-10-06T00:00:00.000Z'
+
+#-------------------------------------------------------------------------------------------------
+#   T E M P L A T E    F O R   2   R E G I O N S - (Insert)
+#-------------------------------------------------------------------------------------------------
+create_02_regions:
+  zipCodes:
+  - zipMin: 68900000
+    zipMax: 68900000
+    status: S
+    expirationDate: '2017-12-31T00:00:00.000Z'
+    comments: Observacao sobre a faixa de CEP 03
+    trackingUpdate:
+      user: USER01
+      dateTime: '2015-10-06T00:00:00.000Z'
+  - zipMin: 68900000
+    zipMax: 68900000
+    status: S
+    expirationDate: '2017-12-22T00:00:00.000Z'
+    comments: Observacao sobre a faixa de CEP 04
+    trackingUpdate:
+      user: USER01
+      dateTime: '2015-10-06T00:00:00.000Z'
+
+#-------------------------------------------------------------------------------------------------
+#   T E M P L A T E    F O R   1   R E G I O N - (Update)
+#-------------------------------------------------------------------------------------------------
+update_zicode:
+  newZipMin: 68900000
+  newZipMax: 68900000
+  status: S
+  expirationDate: '2017-12-31T00:00:00.000Z'
+  comments: Observacao sobre a faixa de CEP
+  trackingUpdate:
+    user: USER01
+    dateTime: '2015-10-06T00:00:00.000Z'

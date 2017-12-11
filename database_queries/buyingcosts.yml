@@ -1,0 +1,16 @@
+get_buyingcosts: "select plta_id_planta planta ,s.sfit_id_item sku, s.sfit_vl_pm custo_medio
+               from saldov_filial_item s,
+                    planta p,
+                    filial f
+              where
+                p.plta_id_terceiro = f.fili_cgc
+                and s.sfit_id_cia    = f.fili_id_cia
+                and s.sfit_id_filial = f.fili_id_filial
+                and s.sfit_tp_propriedade = 'P'
+                and s.sfit_aamm      = ( select max(s2.sfit_aamm)
+                                           from saldov_filial_item s2
+                                           where s2.sfit_id_cia    = s.sfit_id_cia
+                                            and  s2.sfit_id_filial = s.sfit_id_filial
+                                            and  s2.sfit_id_item   = s.sfit_id_item
+                                            and  s2.sfit_tp_propriedade = s.sfit_tp_propriedade )
+                                          and ROWNUM < 2000"

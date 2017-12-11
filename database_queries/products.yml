@@ -1,0 +1,31 @@
+get_sku:                  " SELECT ITEG_ID FROM ITEM_GERAL WHERE ROWNUM < 1000"
+
+get_main_supplier_data:   " SELECT IG.ITEG_ID,
+                            ic.CLIE_ID_TERCEIRO,ic.CLIE_NOME FROM ITEM_GERAL IG
+                            join TERCEIRO_CORPORATIVO ic
+                            on IG.ITEG_ID_FORNEC = ic.CLIE_ID_TERCEIRO
+                            WHERE IG.ITEG_ID = <sku-id>"
+
+get_product_by_sku: "SELECT IG.ITEG_ID, IG.ITEG_NOME, IG.ITEG_ID_FORNEC, IG.ITEG_PESO_BRUTO, IG.ITEG_EAN, IC.CLIE_ID_TERCEIRO,
+                     IG.ITEG_ALTURA, IG.ITEG_LARGURA, IG.ITEG_COMPRIMENTO, IG.ITEG_PZ_MESES_FABR, IG.ITEG_COD_FORNEC
+                     FROM ITEM_GERAL IG join TERCEIRO_CORPORATIVO IC on IG.ITEG_ID_FORNEC = IC.CLIE_ID_TERCEIRO
+                     WHERE IG.ITEG_ID = <sku-id>"
+
+get_ean_list_by_sku:      "SELECT E.EAN_ID_EAN FROM EAN E WHERE E.EAN_ID_SKU = <sku-id>"
+
+get_ean_list:             "SELECT E.EAN_ID_EAN FROM EAN E WHERE ROWNUM < 200"
+
+get_manufacturer:                " SELECT ITEG_FABRICANTE_CNPJ FABRICANTE_CNPJ, ITEG_FABRICANTE_NOME FABRICANTE_NOME FROM ITEM_GERAL WHERE ITEG_ID = <sku-id>"
+
+get_departments:                 " SELECT DEPA_ID_DEPTO, DEPA_NOME FROM DEPARTAMENTO JOIN ITEM_GERAL ON ITEG_ID_DEPTO = DEPA_ID_DEPTO WHERE ITEG_ID = <sku-id>"
+
+get_subdepartment_item_geral:    " SELECT ITEM_GERAL.ITEG_ID_DEPTO department_id, ITEM_GERAL.ITEG_ID_SETOR setor_id from ITEM_GERAL where ITEG_ID = <sku_id>"
+
+
+get_subdepartment_setor:         " SELECT SETOR.SETO_ID_DEPTO, SETOR.SETO_ID_SETOR, SETOR.SETO_NOME FROM SETOR
+                                   where SETOR.SETO_ID_DEPTO = <department_id>
+                                   and SETOR.SETO_ID_SETOR = <setor_id>"
+
+get_cnpj_suppliers:              " SELECT itfo.ITFO_ID_FORNECEDOR, ic.CLIE_NOME
+                                   FROM ITEM_FORNECEDOR itfo JOIN TERCEIRO_CORPORATIVO ic
+                                   ON ic.CLIE_ID_TERCEIRO = itfo.ITFO_ID_FORNECEDOR WHERE itfo.ITFO_ID_ITEM = <sku_id>"

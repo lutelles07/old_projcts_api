@@ -1,0 +1,11 @@
+get_value_sapi_valor: "select a.sapi_api
+    , a.sapi_campo
+    , a.sapi_valor
+    , to_char(a.sapi_dt_execucao,'dd/mm/rrrr hh24:mi:ss')
+    , a.sapi_tid
+from sige_api_controle a WHERE SAPI_API = '<sapi_api>'"
+
+
+update_lastid_directselling:
+  "update sige_api_controle e set e.sapi_valor = '<value>'
+   where e.sapi_api = '<sapi_api>'"

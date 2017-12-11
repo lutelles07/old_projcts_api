@@ -1,0 +1,194 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "inventoryOutputId": {
+      "id": "/properties/inventoryOutputId",
+      "type": "integer",
+      "title": "The Inventoryoutputid Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0
+    },
+    "cmv": {
+      "id": "/properties/cmv",
+      "type": "number",
+      "title": "The Cmv Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0.0
+    },
+    "quantity": {
+      "id": "/properties/quantity",
+      "type": "integer",
+      "title": "The Quantity Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0
+    },
+    "date": {
+      "id": "/properties/date",
+      "type": "string",
+      "title": "The Date Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": ""
+    },
+    "type": {
+      "id": "/properties/type",
+      "type": "string",
+      "title": "The Type Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": ""
+    },
+    "product": {
+      "id": "/properties/product",
+      "type": "object",
+      "properties": {
+        "sku": {
+          "id": "/properties/product/properties/sku",
+          "type": "string",
+          "title": "The Sku Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "ean": {
+          "id": "/properties/product/properties/ean",
+          "type": "string",
+          "title": "The Ean Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "weight": {
+          "id": "/properties/product/properties/weight",
+          "type": "number",
+          "title": "The Weight Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0.0
+        },
+        "volume": {
+          "id": "/properties/product/properties/volume",
+          "type": "number",
+          "title": "The Volume Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0.0
+        },
+        "description": {
+          "id": "/properties/product/properties/description",
+          "type": "string",
+          "title": "The Description Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "departmentId": {
+          "id": "/properties/product/properties/departmentId",
+          "type": "integer",
+          "title": "The Departmentid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "departmentName": {
+          "id": "/properties/product/properties/departmentName",
+          "type": "string",
+          "title": "The Departmentname Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "subDepartmentId": {
+          "id": "/properties/product/properties/subDepartmentId",
+          "type": "integer",
+          "title": "The Subdepartmentid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "subDepartmentName": {
+          "id": "/properties/product/properties/subDepartmentName",
+          "type": "string",
+          "title": "The Subdepartmentname Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "supplierId": {
+          "id": "/properties/product/properties/supplierId",
+          "type": "integer",
+          "title": "The Supplierid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "supplierName": {
+          "id": "/properties/product/properties/supplierName",
+          "type": "string",
+          "title": "The Suppliername Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "supplierSku": {
+          "id": "/properties/product/properties/supplierSku",
+          "type": "string",
+          "title": "The Suppliersku Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        }
+      },
+      "required": [
+        "sku",
+        "ean",
+        "weight",
+        "description",
+        "departmentId",
+        "departmentName",
+        "subDepartmentId",
+        "subDepartmentName",
+        "supplierId",
+        "supplierName",
+        "supplierSku"
+      ]
+    },
+    "warrantyId": {
+      "id": "/properties/warrantyId",
+      "type": "integer",
+      "title": "The Warrantyid Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0
+    },
+    "warranty": {
+      "id": "/properties/warranty",
+      "type": "string",
+      "title": "The Warranty Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": ""
+    },
+    "inventoryLocationId": {
+      "id": "/properties/inventoryLocationId",
+      "type": "integer",
+      "title": "The Inventorylocationid Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0
+    },
+    "inventoryLocationDescription": {
+      "id": "/properties/inventoryLocationDescription",
+      "type": "string",
+      "title": "The Inventorylocationdescription Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": ""
+    },
+    "plant_id": {
+      "id": "/properties/plant_id",
+      "type": "string",
+      "title": "The Plant_id Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": ""
+    }
+  },
+  "required": [
+    "inventoryOutputId",
+    "cmv",
+    "quantity",
+    "date",
+    "type",
+    "product",
+    "warrantyId",
+    "warranty",
+    "inventoryLocationId",
+    "inventoryLocationDescription",
+    "plant_id"
+  ]
+}

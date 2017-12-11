@@ -1,0 +1,114 @@
+get_b2bpartner_id:     "SELECT DISTINCT CLIE_ID_TERCEIRO
+                        FROM (SELECT A.CLIE_ID_TERCEIRO
+                                FROM TERCEIRO_CORPORATIVO A
+                              INNER JOIN CLIENTE_UNIDADE_DE_NEGOCIOS B
+                                  ON A.CLIE_ID_TERCEIRO = B.CIUN_ID_CLIENTE
+                              INNER JOIN UNIDADE_DE_NEGOCIOS C
+                                  ON C.UNIN_ID_UNINEG = B.CIUN_ID_UNINEG
+                                AND C.UNIN_ID_CIA = B.CIUN_ID_CIA
+                              WHERE C.UNIN_TP_VENDA = 'B2B'
+                                AND A.CLIE_ID_TERCEIRO IN
+                                    (SELECT DISTINCT (CONB_ID_CLIENTE) FROM CONTRATO_B2B)
+                              UNION
+                              SELECT A.CLIE_ID_TERCEIRO
+                                FROM TERCEIRO_CORPORATIVO A
+                              INNER JOIN CLIENTE_UNIDADE_DE_NEGOCIOS B
+                                  ON A.CLIE_ID_TERCEIRO = B.CIUN_ID_CLIENTE
+                              INNER JOIN UNIDADE_DE_NEGOCIOS C
+                                  ON C.UNIN_ID_UNINEG = B.CIUN_ID_UNINEG
+                                AND C.UNIN_ID_CIA = B.CIUN_ID_CIA
+                              WHERE C.UNIN_TP_VENDA = 'B2B'
+                                AND A.CLIE_ID_TERCEIRO IN
+                                    (SELECT DISTINCT (SCON_CLIENTE_AGENCIA) FROM SUB_CONTRATO_B2B))"
+
+#------------------------------------------------------------------------------------------------------
+get_details: " select         b.ciun_agencia,
+                              e.clen_bairro,
+                              b.ciun_banco,
+                              e.clen_cep,
+                              e.clen_complemento,
+                              b.ciun_conta,
+                              b.ciun_agencia_dv,
+                              b.ciun_conta_dv,
+                              a.clie_dt_nasc,
+                              a.clie_email,
+                              b.ciun_id_cia,
+                              a.clie_id_clasf_cliente,
+                              a.clie_id_terceiro,
+                              a.clie_id_tipcli,
+                              b.ciun_id_unineg,
+                              a.clie_insest,
+                              e.clen_end,
+                              b.ciun_nome_favorecido,
+                              b.ciun_nome,
+                              e.clen_numero,
+                              'BRA'   as pais,
+                              e.clen_referencia,
+                              a.clie_sexo,
+                              a.clie_tel1,
+                              a.clie_tel2,
+                              a.clie_tel,
+                              b.ciun_tp_conta
+                              from terceiro_corporativo a
+                              join cliente_unidade_de_negocios b
+                              on a.clie_id_terceiro = b.ciun_id_cliente
+                              join unidade_de_negocios d
+                              on d.unin_id_unineg = b.ciun_id_unineg
+                              and d.unin_id_cia = b.ciun_id_cia
+                              join terceiro_enderecos e
+                              on clen_id_terceiro = a.clie_id_terceiro
+                              where d.unin_tp_venda = 'B2B'
+                              and e.clen_situacao = 'A'
+                              and e.clen_tp_end = 'F'
+                              and a.clie_id_terceiro = '<idcli>'
+                              and rownum < 2"
+
+#-----------------------------------------------------------------------------------------------------
+get_invoices_details:   "select a.nfca_dt_emissao,
+                               (a.nfca_dt_emissao + 10) dt_vencto,
+                               a.nfca_vl_total_nota,
+                               a.nfca_id_filial,
+                               a.nfca_id_nota,
+                               a.nfca_serie,
+                               c.pedc_id_cliente
+                          from nota_fiscal_cabecalho a,
+                               pedido_de_venda_cabecalho c
+                        where  a.nfca_id_cia = c.pedc_id_cia
+                           and a.nfca_id_ped = c.pedc_id_pedido
+                           and a.nfca_situacao = 'A'
+                           and a.nfca_dt_emissao > date '2016-01-01'
+                           and a.nfca_vl_mercadoria is not null
+                           and a.nfca_vl_total_nota is not null
+                           and pc_sige_b2b_venda_direta.fnc_pedido_venda_direta_char(a.nfca_id_cia,
+                                                                                     a.nfca_id_ped) = 'S'
+                           and not exists (select *
+                                  from sige_b2b_nota_debito_detalhe nd
+                                 where nd.bndd_id_nota_nf = a.nfca_id_nota
+                                   and nd.bndd_id_filial_nf = a.nfca_id_filial
+                                   and nd.bndd_serie_nf = a.nfca_serie)
+                           and rownum < 200 order by c.pedc_id_cliente"
+
+#-----------------------------------------------------------------------------------------------------
+get_max_notes:  "select max(bndc_id_nota_debito) as max_note_id from sige_b2b_nota_debito_cabecalho"
+
+#-----------------------------------------------------------------------------------------------------
+delete_invoices_details: "delete from sige_b2b_nota_debito_detalhe a
+                              where a.bndd_usuario_inclusao in ('SWMART', 'ALD_B2BPARTNERS_USR', 'LOCKDOWN_USR')"
+
+#-----------------------------------------------------------------------------------------------------
+delete_invoices_header: "delete from sige_b2b_nota_debito_cabecalho a
+                                where a.bndc_usuario_inclusao in ('SWMART', 'ALD_B2BPARTNERS_USR', 'LOCKDOWN_USR')"
+#-----------------------------------------------------------------------------------------------------
+delete_invoices_b2bpartners: "begin
+     for x in (select distinct (nd.bndd_id_nota_debito)
+               from sige_b2b_nota_debito_detalhe nd
+               where nd.bndd_data_inclusao >= sysdate - 100
+               and   nd.bndd_id_instancia is null
+               and   nd.bndd_usuario_inclusao in ('SWMART', 'ALD_B2BPARTNERS_USR', 'LOCKDOWN_USR')) loop
+     delete from sige_b2b_nota_debito_detalhe d
+     where d.bndd_id_nota_debito = x.bndd_id_nota_debito
+     delete from sige_b2b_nota_debito_cabecalho c
+     where c.bndc_id_nota_debito = x.bndd_id_nota_debito
+     commit
+     end loop
+  end"

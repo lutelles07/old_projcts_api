@@ -1,0 +1,80 @@
+get_cnpj_transp: "SELECT * FROM MEGA_ROTA"
+
+#---------------------------------------------------------------------------------------------------
+get_section_code: "select * from gte_corte where cort_id_corte like 'EG%'"
+
+#---------------------------------------------------------------------------------------------------
+get_terceiro_contract: "SELECT a.clen_id_terceiro
+      FROM TERCEIRO_ENDERECOS_TESTE A
+       where  NOT EXISTS (SELECT * FROM GTE_TRANSPORTADORA_CONTRATO B
+                                WHERE A.CLEN_ID_TERCEIRO =  B.TRCT_ID_TRANSPORTADORA ) AND ROWNUM < 10
+                                 ORDER BY A.CLEN_DT_ALTERACAO DESC"
+#---------------------------------------------------------------------------------------------------
+get_transportadora_contract :  " SELECT A.TRCT_ID_ESTABELECIMENTO AS BRANCH,
+                                        A.TRCT_ID_TRANSPORTADORA  AS CNPJ,
+                                        A.TRCT_ID_CONTRATO        AS ID
+                                   FROM GTE_TRANSPORTADORA_CONTRATO A
+                                   WHERE A.TRCT_USUARIO = 'USER01'"
+
+#---------------------------------------------------------------------------------------------------
+get_transportadora_cnpj :  "SELECT DISTINCT(A.MEGA_ID_TRANSP) AS CNPJ,
+                                   B.TRCT_ID_ESTABELECIMENTO AS BRANCH,
+                                   B.TRCT_ID_CONTRATO        AS ID,
+                                   A.MEGA_ID_MEGA_ROTA       AS ROUTEID
+                                   FROM MEGA_ROTA A,
+                                        GTE_TRANSPORTADORA_CONTRATO B
+                                   WHERE A.MEGA_ID_TRANSP = B.TRCT_ID_TRANSPORTADORA
+                                   AND B.TRCT_ID_CONTRATO IN (1, 2)"
+
+#---------------------------------------------------------------------------------------------------
+get_zipcodes: "SELECT a.tcrc_id_transportadora AS CNPJ,
+                      a.tcrc_id_estabelecimento AS BRANCH,
+                      a.tcrc_id_contrato AS CONTRACTID,
+                      a.tcrc_id_regiao AS REGION,
+                      a.tcrc_cep_ini AS CEPINI,
+                      a.tcrc_cep_fim AS CEPFIM
+                      FROM gte_transp_contrato_regiao_cep a
+               WHERE a.tcrc_id_transportadora >= 80000000000000
+                              AND ROWNUM <= 8000
+                              ORDER BY a.tcrc_id_transportadora"
+
+#---------------------------------------------------------------------------------------------------
+get_count_zipcodes: " select count(*) as COUNT_UPDATED_ZIPCODES
+                      from gte_transp_contrato_regiao_cep z
+                        where z.tcrc_id_transportadora = '<cnpj>'
+                          and z.tcrc_id_estabelecimento = '<branch>'
+                          and z.tcrc_id_contrato = '<contractid>'
+                          and z.tcrc_id_regiao = '<region>'
+                          and z.tcrc_cep_ini = '<cepini>'
+                          and z.tcrc_cep_fim = '<cepfim>'"
+
+#---------------------------------------------------------------------------------------------------
+match_zipcodes: " select *
+                      from gte_transp_contrato_regiao_cep
+                        where tcrc_id_transportadora = '<cnpj>'
+                          and tcrc_id_estabelecimento = '<branch>'
+                          and tcrc_id_contrato = '<contractid>'
+                          and tcrc_id_regiao = '<region>'
+                          and tcrc_cep_ini = '<cepini>'
+                          and tcrc_cep_fim = '<cepfim>'"
+
+#---------------------------------------------------------------------------------------------------
+delete_zipcodes: "delete from gte_transp_contrato_regiao_cep a
+                  where a.tcrc_usuario = 'USER01'"
+
+#---------------------------------------------------------------------------------------------------
+get_regions: " select count(*) as COUNT_REGION
+              from gte_transp_contrato_regiao a
+               where a.tcre_id_transportadora   = '<cnpj>'
+               and   a.tcre_id_estabelecimento  = '<branch>'
+               and   a.tcre_id_contrato         = '<contractid>'
+               and   a.tcre_id_regiao           = '<region>'"
+
+#---------------------------------------------------------------------------------------------------
+count_all_regions: " select count(*) as COUNT_REGION
+                      from gte_transp_contrato_regiao a
+                      where a.tcre_id_transportadora   = '<cnpj>'
+                      and   a.tcre_id_estabelecimento  = '<branch>'
+                      and   a.tcre_id_contrato         = '<contractid>'"
+
+#---------------------------------------------------------------------------------------------------

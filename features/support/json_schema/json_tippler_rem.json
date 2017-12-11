@@ -1,0 +1,1050 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "shippingCode": {
+      "$id": "/properties/shippingCode",
+      "type": "integer",
+      "title": "The Shippingcode Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [
+        361395
+      ]
+    },
+    "issueDate": {
+      "$id": "/properties/issueDate",
+      "type": "string",
+      "title": "The Issuedate Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "2014-10-13T00:00:00.000Z"
+      ]
+    },
+    "shippingDate": {
+      "$id": "/properties/shippingDate",
+      "type": "string",
+      "title": "The Shippingdate Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "2014-10-14T05:23:37.000Z"
+      ]
+    },
+    "serviceType": {
+      "$id": "/properties/serviceType",
+      "type": "string",
+      "title": "The Servicetype Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "remessa"
+      ]
+    },
+    "company": {
+      "$id": "/properties/company",
+      "type": "integer",
+      "title": "The Company Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [
+        1
+      ]
+    },
+    "branch": {
+      "$id": "/properties/branch",
+      "type": "object",
+      "properties": {
+        "id": {
+          "$id": "/properties/branch/properties/id",
+          "type": "integer",
+          "title": "The Id Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0,
+          "examples": [
+            7
+          ]
+        },
+        "city": {
+          "$id": "/properties/branch/properties/city",
+          "type": "string",
+          "title": "The City Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": "",
+          "examples": [
+            "CAJAMAR"
+          ]
+        }
+      }
+    },
+    "ediFile": {
+      "$id": "/properties/ediFile",
+      "type": "string",
+      "title": "The Edifile Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": "",
+      "examples": [
+        "https://vip-aldebaran-olimpo.qa.vmcommerce.intra/aldebaran-tippler/tippler/notfis/2/edis"
+      ]
+    },
+    "sender": {
+      "$id": "/properties/sender",
+      "type": "object",
+      "properties": {
+        "suframa": {
+          "$id": "/properties/sender/properties/suframa",
+          "type": "object",
+          "properties": {
+            "inscription": {
+              "$id": "/properties/sender/properties/suframa/properties/inscription",
+              "type": "null",
+              "title": "The Inscription Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "validity": {
+              "$id": "/properties/sender/properties/suframa/properties/validity",
+              "type": "null",
+              "title": "The Validity Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            }
+          }
+        },
+        "company": {
+          "$id": "/properties/sender/properties/company",
+          "type": "object",
+          "properties": {
+            "companyName": {
+              "$id": "/properties/sender/properties/company/properties/companyName",
+              "type": "string",
+              "title": "The Companyname Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "WMB COMERCIO ELETRONICO LTDA"
+              ]
+            },
+            "legalPersonNationalCode": {
+              "$id": "/properties/sender/properties/company/properties/legalPersonNationalCode",
+              "type": "string",
+              "title": "The Legalpersonnationalcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "14314050000662"
+              ]
+            },
+            "stateRegistration": {
+              "$id": "/properties/sender/properties/company/properties/stateRegistration",
+              "type": "string",
+              "title": "The Stateregistration Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "241045599119"
+              ]
+            },
+            "taxPayer": {
+              "$id": "/properties/sender/properties/company/properties/taxPayer",
+              "type": "boolean",
+              "title": "The Taxpayer Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": false,
+              "examples": [
+                false
+              ]
+            }
+          }
+        },
+        "address": {
+          "$id": "/properties/sender/properties/address",
+          "type": "object",
+          "properties": {
+            "street": {
+              "$id": "/properties/sender/properties/address/properties/street",
+              "type": "null",
+              "title": "The Street Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "district": {
+              "$id": "/properties/sender/properties/address/properties/district",
+              "type": "string",
+              "title": "The District Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "Sitio dos Paes"
+              ]
+            },
+            "city": {
+              "$id": "/properties/sender/properties/address/properties/city",
+              "type": "null",
+              "title": "The City Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "zipCode": {
+              "$id": "/properties/sender/properties/address/properties/zipCode",
+              "type": "string",
+              "title": "The Zipcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "7776900"
+              ]
+            },
+            "state": {
+              "$id": "/properties/sender/properties/address/properties/state",
+              "type": "string",
+              "title": "The State Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "SP"
+              ]
+            },
+            "country": {
+              "$id": "/properties/sender/properties/address/properties/country",
+              "type": "string",
+              "title": "The Country Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "Brasil"
+              ]
+            },
+            "locationType": {
+              "$id": "/properties/sender/properties/address/properties/locationType",
+              "type": "string",
+              "title": "The Locationtype Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "residencial"
+              ]
+            },
+            "nearbyLocation": {
+              "$id": "/properties/sender/properties/address/properties/nearbyLocation",
+              "type": "null",
+              "title": "The Nearbylocation Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            }
+          }
+        }
+      }
+    },
+    "recipient": {
+      "$id": "/properties/recipient",
+      "type": "object",
+      "properties": {
+        "company": {
+          "$id": "/properties/recipient/properties/company",
+          "type": "object",
+          "properties": {
+            "companyName": {
+              "$id": "/properties/recipient/properties/company/properties/companyName",
+              "type": "string",
+              "title": "The Companyname Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0"
+              ]
+            },
+            "legalPersonNationalCode": {
+              "$id": "/properties/recipient/properties/company/properties/legalPersonNationalCode",
+              "type": "string",
+              "title": "The Legalpersonnationalcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "00021970604816"
+              ]
+            },
+            "stateRegistration": {
+              "$id": "/properties/recipient/properties/company/properties/stateRegistration",
+              "type": "string",
+              "title": "The Stateregistration Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "ISENTO"
+              ]
+            }
+          }
+        },
+        "address": {
+          "$id": "/properties/recipient/properties/address",
+          "type": "object",
+          "properties": {
+            "street": {
+              "$id": "/properties/recipient/properties/address/properties/street",
+              "type": "string",
+              "title": "The Street Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0"
+              ]
+            },
+            "district": {
+              "$id": "/properties/recipient/properties/address/properties/district",
+              "type": "string",
+              "title": "The District Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0"
+              ]
+            },
+            "city": {
+              "$id": "/properties/recipient/properties/address/properties/city",
+              "type": "string",
+              "title": "The City Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "CAMPINAS"
+              ]
+            },
+            "zipCode": {
+              "$id": "/properties/recipient/properties/address/properties/zipCode",
+              "type": "string",
+              "title": "The Zipcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "13054076"
+              ]
+            },
+            "state": {
+              "$id": "/properties/recipient/properties/address/properties/state",
+              "type": "string",
+              "title": "The State Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "SP"
+              ]
+            },
+            "country": {
+              "$id": "/properties/recipient/properties/address/properties/country",
+              "type": "null",
+              "title": "The Country Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "locationType": {
+              "$id": "/properties/recipient/properties/address/properties/locationType",
+              "type": "null",
+              "title": "The Locationtype Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "nearbyLocation": {
+              "$id": "/properties/recipient/properties/address/properties/nearbyLocation",
+              "type": "string",
+              "title": "The Nearbylocation Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0"
+              ]
+            }
+          }
+        },
+        "contact": {
+          "$id": "/properties/recipient/properties/contact",
+          "type": "object",
+          "properties": {
+            "telephone": {
+              "$id": "/properties/recipient/properties/contact/properties/telephone",
+              "type": "string",
+              "title": "The Telephone Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0"
+              ]
+            },
+            "mobile": {
+              "$id": "/properties/recipient/properties/contact/properties/mobile",
+              "type": "string",
+              "title": "The Mobile Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "0"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "redispatchRecipient": {
+      "$id": "/properties/redispatchRecipient",
+      "type": "object",
+      "properties": {
+        "company": {
+          "$id": "/properties/redispatchRecipient/properties/company",
+          "type": "object",
+          "properties": {
+            "companyName": {
+              "$id": "/properties/redispatchRecipient/properties/company/properties/companyName",
+              "type": "null",
+              "title": "The Companyname Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "legalPersonNationalCode": {
+              "$id": "/properties/redispatchRecipient/properties/company/properties/legalPersonNationalCode",
+              "type": "null",
+              "title": "The Legalpersonnationalcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "stateRegistration": {
+              "$id": "/properties/redispatchRecipient/properties/company/properties/stateRegistration",
+              "type": "null",
+              "title": "The Stateregistration Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            }
+          }
+        },
+        "address": {
+          "$id": "/properties/redispatchRecipient/properties/address",
+          "type": "object",
+          "properties": {
+            "street": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/street",
+              "type": "string",
+              "title": "The Street Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                " "
+              ]
+            },
+            "district": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/district",
+              "type": "null",
+              "title": "The District Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "city": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/city",
+              "type": "null",
+              "title": "The City Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "zipCode": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/zipCode",
+              "type": "null",
+              "title": "The Zipcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "state": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/state",
+              "type": "null",
+              "title": "The State Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "country": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/country",
+              "type": "null",
+              "title": "The Country Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "locationType": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/locationType",
+              "type": "null",
+              "title": "The Locationtype Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "nearbyLocation": {
+              "$id": "/properties/redispatchRecipient/properties/address/properties/nearbyLocation",
+              "type": "null",
+              "title": "The Nearbylocation Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            }
+          }
+        },
+        "contact": {
+          "$id": "/properties/redispatchRecipient/properties/contact",
+          "type": "object",
+          "properties": {
+            "telephone": {
+              "$id": "/properties/redispatchRecipient/properties/contact/properties/telephone",
+              "type": "null",
+              "title": "The Telephone Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            },
+            "mobile": {
+              "$id": "/properties/redispatchRecipient/properties/contact/properties/mobile",
+              "type": "null",
+              "title": "The Mobile Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": null,
+              "examples": [
+                null
+              ]
+            }
+          }
+        }
+      }
+    },
+    "carrier": {
+      "$id": "/properties/carrier",
+      "type": "object",
+      "properties": {
+        "company": {
+          "$id": "/properties/carrier/properties/company",
+          "type": "object",
+          "properties": {
+            "legalPersonNationalCode": {
+              "$id": "/properties/carrier/properties/company/properties/legalPersonNationalCode",
+              "type": "string",
+              "title": "The Legalpersonnationalcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": "",
+              "examples": [
+                "73939449000193"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "cargoId": {
+      "$id": "/properties/cargoId",
+      "type": "integer",
+      "title": "The Cargoid Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": 0,
+      "examples": [
+        325284
+      ]
+    },
+    "invoices": {
+      "$id": "/properties/invoices",
+      "type": "array",
+      "items": {
+        "$id": "/properties/invoices/items",
+        "type": "object",
+        "properties": {
+          "number": {
+            "$id": "/properties/invoices/items/properties/number",
+            "type": "integer",
+            "title": "The Number Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              71124
+            ]
+          },
+          "serie": {
+            "$id": "/properties/invoices/items/properties/serie",
+            "type": "integer",
+            "title": "The Serie Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              18
+            ]
+          },
+          "issueDate": {
+            "$id": "/properties/invoices/items/properties/issueDate",
+            "type": "string",
+            "title": "The Issuedate Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "2014-10-13T00:00:00.000Z"
+            ]
+          },
+          "natureOfRevenue": {
+            "$id": "/properties/invoices/items/properties/natureOfRevenue",
+            "type": "string",
+            "title": "The Natureofrevenue Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "NFS"
+            ]
+          },
+          "operationCodeTaxCode": {
+            "$id": "/properties/invoices/items/properties/operationCodeTaxCode",
+            "type": "",
+            "title": "The Operationcodetaxcode Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "5405"
+            ]
+          },
+          "orderNumber": {
+            "$id": "/properties/invoices/items/properties/orderNumber",
+            "type": "string",
+            "title": "The Ordernumber Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "1619871902"
+            ]
+          },
+          "customerServiceInstance": {
+            "$id": "/properties/invoices/items/properties/customerServiceInstance",
+            "type": "null",
+            "title": "The Customerserviceinstance Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "salesChannel": {
+            "$id": "/properties/invoices/items/properties/salesChannel",
+            "type": "string",
+            "title": "The Saleschannel Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "SITE"
+            ]
+          },
+          "partnerReference": {
+            "$id": "/properties/invoices/items/properties/partnerReference",
+            "type": "null",
+            "title": "The Partnerreference Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "totalWeight": {
+            "$id": "/properties/invoices/items/properties/totalWeight",
+            "type": "number",
+            "title": "The Totalweight Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+              2.640000104904175
+            ]
+          },
+          "cubedWeight": {
+            "$id": "/properties/invoices/items/properties/cubedWeight",
+            "type": "number",
+            "title": "The Cubedweight Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "weightVolumeFreightAmount": {
+            "$id": "/properties/invoices/items/properties/weightVolumeFreightAmount",
+            "type": "number",
+            "title": "The Weightvolumefreightamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "freightCondition": {
+            "$id": "/properties/invoices/items/properties/freightCondition",
+            "type": "string",
+            "title": "The Freightcondition Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "C"
+            ]
+          },
+          "icmsTaxIncidence": {
+            "$id": "/properties/invoices/items/properties/icmsTaxIncidence",
+            "type": "boolean",
+            "title": "The Icmstaxincidence Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "icmsTaxRate": {
+            "$id": "/properties/invoices/items/properties/icmsTaxRate",
+            "type": "number",
+            "title": "The Icmstaxrate Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "icmsTaxBaseAmount": {
+            "$id": "/properties/invoices/items/properties/icmsTaxBaseAmount",
+            "type": "number",
+            "title": "The Icmstaxbaseamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "icmsTaxTotalAmount": {
+            "$id": "/properties/invoices/items/properties/icmsTaxTotalAmount",
+            "type": "number",
+            "title": "The Icmstaxtotalamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "icmsTaxRetainedOrReplaced": {
+            "$id": "/properties/invoices/items/properties/icmsTaxRetainedOrReplaced",
+            "type": "number",
+            "title": "The Icmstaxretainedorreplaced Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "goodsTotalAmount": {
+            "$id": "/properties/invoices/items/properties/goodsTotalAmount",
+            "type": "number",
+            "title": "The Goodstotalamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+              67.0199966430664
+            ]
+          },
+          "totalChargedAmount": {
+            "$id": "/properties/invoices/items/properties/totalChargedAmount",
+            "type": "number",
+            "title": "The Totalchargedamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+              67.0199966430664
+            ]
+          },
+          "freightTotalAmount": {
+            "$id": "/properties/invoices/items/properties/freightTotalAmount",
+            "type": "number",
+            "title": "The Freighttotalamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0,
+            "examples": [
+              7.579999923706055
+            ]
+          },
+          "adValoremAmount": {
+            "$id": "/properties/invoices/items/properties/adValoremAmount",
+            "type": "number",
+            "title": "The Advaloremamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "taxTotalAmount": {
+            "$id": "/properties/invoices/items/properties/taxTotalAmount",
+            "type": "number",
+            "title": "The Taxtotalamount Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "volumesTotalQuantity": {
+            "$id": "/properties/invoices/items/properties/volumesTotalQuantity",
+            "type": "integer",
+            "title": "The Volumestotalquantity Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0,
+            "examples": [
+              1
+            ]
+          },
+          "invoiceFile": {
+            "$id": "/properties/invoices/items/properties/invoiceFile",
+            "type": "string",
+            "title": "The Invoicefile Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": "",
+            "examples": [
+              "https://vip-aldebaran-olimpo.qa.vmcommerce.intra/aldebaran-tippler/tippler/notfis/2/invoices"
+            ]
+          },
+          "checklistFile": {
+            "$id": "/properties/invoices/items/properties/checklistFile",
+            "type": "null",
+            "title": "The Checklistfile Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "electronicInvoiceAuxiliarDocument": {
+            "$id": "/properties/invoices/items/properties/electronicInvoiceAuxiliarDocument",
+            "type": "object",
+            "properties": {
+              "accessKey": {
+                "$id": "/properties/invoices/items/properties/electronicInvoiceAuxiliarDocument/properties/accessKey",
+                "type": "string",
+                "title": "The Accesskey Schema.",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "35141014314050000662550180000711241350923747"
+                ]
+              },
+              "accessKeyGenerateUrl": {
+                "$id": "/properties/invoices/items/properties/electronicInvoiceAuxiliarDocument/properties/accessKeyGenerateUrl",
+                "type": "string",
+                "title": "The Accesskeygenerateurl Schema.",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "https://vip-aldebaran-olimpo.qa.vmcommerce.intra/aldebaran-tippler/tippler/invoices/71124/accessKey?company=1&branch=7&serie=18"
+                ]
+              }
+            }
+          },
+          "scheduling": {
+            "$id": "/properties/invoices/items/properties/scheduling",
+            "type": "object",
+            "properties": {
+              "promisedDeliveryDate": {
+                "$id": "/properties/invoices/items/properties/scheduling/properties/promisedDeliveryDate",
+                "type": "string",
+                "title": "The Promiseddeliverydate Schema.",
+                "description": "An explanation about the purpose of this instance.",
+                "default": "",
+                "examples": [
+                  "2014-10-21T00:00:00.000Z"
+                ]
+              }
+            }
+          },
+          "volumes": {
+            "$id": "/properties/invoices/items/properties/volumes",
+            "type": "array",
+            "items": {
+              "$id": "/properties/invoices/items/properties/volumes/items",
+              "type": "object",
+              "properties": {
+                "weight": {
+                  "$id": "/properties/invoices/items/properties/volumes/items/properties/weight",
+                  "type": "number",
+                  "title": "The Weight Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0.0,
+                  "examples": [
+                    2.640000104904175
+                  ]
+                },
+                "measuredWeight": {
+                  "$id": "/properties/invoices/items/properties/volumes/items/properties/measuredWeight",
+                  "type": "number",
+                  "title": "The Measuredweight Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                },
+                "cubedWeight": {
+                  "$id": "/properties/invoices/items/properties/volumes/items/properties/cubedWeight",
+                  "type": "number",
+                  "title": "The Cubedweight Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                },
+                "length": {
+                  "$id": "/properties/invoices/items/properties/volumes/items/properties/length",
+                  "type": "number",
+                  "title": "The Length Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0.0,
+                  "examples": [
+                    0.07000000029802322
+                  ]
+                },
+                "width": {
+                  "$id": "/properties/invoices/items/properties/volumes/items/properties/width",
+                  "type": "number",
+                  "title": "The Width Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0.0,
+                  "examples": [
+                    0.029999999329447746
+                  ]
+                },
+                "height": {
+                  "$id": "/properties/invoices/items/properties/volumes/items/properties/height",
+                  "type": "number",
+                  "title": "The Height Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0.0,
+                  "examples": [
+                    0.18000000715255737
+                  ]
+                },
+                "barCode": {
+                  "$id": "/properties/invoices/items/properties/volumes/items/properties/barCode",
+                  "type": "string",
+                  "title": "The Barcode Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "TN006452732CJ"
+                  ]
+                }
+              }
+            }
+          },
+          "goods": {
+            "$id": "/properties/invoices/items/properties/goods",
+            "type": "array",
+            "items": {
+              "$id": "/properties/invoices/items/properties/goods/items",
+              "type": "object",
+              "properties": {
+                "quantity": {
+                  "$id": "/properties/invoices/items/properties/goods/items/properties/quantity",
+                  "type": "integer",
+                  "title": "The Quantity Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    1
+                  ]
+                },
+                "packagingType": {
+                  "$id": "/properties/invoices/items/properties/goods/items/properties/packagingType",
+                  "type": "string",
+                  "title": "The Packagingtype Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "CAIXA"
+                  ]
+                },
+                "itemCode": {
+                  "$id": "/properties/invoices/items/properties/goods/items/properties/itemCode",
+                  "type": "string",
+                  "title": "The Itemcode Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "324546"
+                  ]
+                },
+                "itemDescription": {
+                  "$id": "/properties/invoices/items/properties/goods/items/properties/itemDescription",
+                  "type": "string",
+                  "title": "The Itemdescription Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": "",
+                  "examples": [
+                    "ESMALTE IMPALA CROMO LOVER"
+                  ]
+                },
+                "unitPrice": {
+                  "$id": "/properties/invoices/items/properties/goods/items/properties/unitPrice",
+                  "type": "number",
+                  "title": "The Unitprice Schema.",
+                  "description": "An explanation about the purpose of this instance.",
+                  "default": 0,
+                  "examples": [
+                    0
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

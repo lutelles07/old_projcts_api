@@ -1,0 +1,16 @@
+get_order_id_client_cpf:
+  "select pedc.pedc_id_cliente    cpf_cnpj
+  , pedc.pedc_ped_cliente   ped_loja
+  , pedc.pedc_id_pedido     entrega
+  , pedd.pedd_id_item       id_item
+  , iteg.iteg_nome          item
+  from pedido_de_venda_cabecalho pedc
+  , pedido_de_venda_detalhes  pedd
+  , item_geral                iteg
+  where pedc.pedc_id_pedido = pedd.pedd_id_pedido
+   and pedd.pedd_id_item   = iteg.iteg_id
+   and pedc.pedc_dt_emissao >= to_date('01/05/2017','dd/mm/rrrr')
+   AND ROWNUM < 50"
+
+update_date_order:
+  "UPDATE sige_api_controle SET sapi_dt_execucao   = sysdate-100 WHERE sapi_api = 'aldebaran-ura' and sapi_campo = 'ObterItensAtualizados'"

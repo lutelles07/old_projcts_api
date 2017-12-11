@@ -1,0 +1,26 @@
+local:
+  server: 'http://localhost:8080'
+  rabbitmq: 'napsao-qa-nix-lockdown-rabbitmq-1.qa.vmcommerce.intra'
+
+qa:
+  server: 'https://vip-aldebaran-olimpo.qa.vmcommerce.intra'
+  server1: 'https://napsao-qa-nix-aldebaran-1.qa.vmcommerce.intra'
+  server2: 'https://napsao-qa-nix-aldebaran-2.qa.vmcommerce.intra'
+  server3: 'https://napsao-qa-nix-aldebaran-3.qa.vmcommerce.intra'
+  server4: 'https://napsao-qa-nix-aldebaran-4.qa.vmcommerce.intra'
+  server5: 'https://napsao-qa-nix-aldebaran-5.qa.vmcommerce.intra'
+  server6: 'https://napsao-qa-nix-aldebaran-6.qa.vmcommerce.intra'
+  server7: 'https://napsao-qa-nix-aldebaran-7.qa.vmcommerce.intra'
+  server8: 'https://napsao-qa-nix-aldebaran-8.qa.vmcommerce.intra'
+  rabbitmq: 'napsao-qa-nix-lockdown-rabbitmq-1.qa.vmcommerce.intra'
+  token: 'http://napsao-qa-nix-keycloak-1.qa.vmcommerce.intra:8080'
+
+stg:
+  server: 'https://vip-aldebaran-olimpo.stg.vmcommerce.intra'
+  server1: 'https://napsao-stg-nix-aldebaran-1.stg.vmcommerce.intra'
+  server2: 'https://napsao-stg-nix-aldebaran-2.stg.vmcommerce.intra'
+  server3: 'https://napsao-stg-nix-aldebaran-3.stg.vmcommerce.intra'
+  server4: 'https://napsao-stg-nix-aldebaran-4.stg.vmcommerce.intra'
+  server5: 'https://napsao-stg-nix-aldebaran-5.stg.vmcommerce.intra'
+  rabbitmq: 'napsao-stg-nix-lockdown-rabbitmq-1.stg.vmcommerce.intra'
+  token: 'http://vip-keycloak.stg.vmcommerce.intra'

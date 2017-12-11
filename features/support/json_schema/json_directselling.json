@@ -1,0 +1,440 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "http://example.com/example.json",
+  "type": "object",
+  "properties": {
+    "operationType": {
+      "id": "/properties/operationType",
+      "type": "string",
+      "title": "The Operationtype Schema.",
+      "description": "An explanation about the purpose of this instance.",
+      "default": ""
+    },
+    "partner": {
+      "id": "/properties/partner",
+      "type": "object",
+      "properties": {
+        "contractId": {
+          "id": "/properties/partner/properties/contractId",
+          "type": "integer",
+          "title": "The Contractid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "subcontractId": {
+          "id": "/properties/partner/properties/subcontractId",
+          "type": "integer",
+          "title": "The Subcontractid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "name": {
+          "id": "/properties/partner/properties/name",
+          "type": "string",
+          "title": "The Name Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "cnpj": {
+          "id": "/properties/partner/properties/cnpj",
+          "type": "integer",
+          "title": "The Cnpj Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "address": {
+          "id": "/properties/partner/properties/address",
+          "type": "object",
+          "properties": {
+            "street": {
+              "id": "/properties/partner/properties/address/properties/street",
+              "type": "string",
+              "title": "The Street Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "number": {
+              "id": "/properties/partner/properties/address/properties/number",
+              "type": "string",
+              "title": "The Number Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "complement": {
+              "id": "/properties/partner/properties/address/properties/complement",
+              "type": "string",
+              "title": "The Complement Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "zipCode": {
+              "id": "/properties/partner/properties/address/properties/zipCode",
+              "type": "string",
+              "title": "The Zipcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "neighborhood": {
+              "id": "/properties/partner/properties/address/properties/neighborhood",
+              "type": "string",
+              "title": "The Neighborhood Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "city": {
+              "id": "/properties/partner/properties/address/properties/city",
+              "type": "string",
+              "title": "The City Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "state": {
+              "id": "/properties/partner/properties/address/properties/state",
+              "type": "string",
+              "title": "The State Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "reference": {
+              "id": "/properties/partner/properties/address/properties/reference",
+              "type": "string",
+              "title": "The Reference Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            }
+          },
+          "required": [
+            "street",
+            "number",
+            "complement",
+            "zipCode",
+            "neighborhood",
+            "city",
+            "state",
+            "reference"
+          ]
+        }
+      },
+      "required": [
+        "contractId",
+        "subcontractId",
+        "name",
+        "cnpj",
+        "address"
+      ]
+    },
+    "instance": {
+      "id": "/properties/instance",
+      "type": "object",
+      "properties": {
+        "number": {
+          "id": "/properties/instance/properties/number",
+          "type": "null",
+          "title": "The Number Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": null
+        },
+        "releaseDate": {
+          "id": "/properties/instance/properties/releaseDate",
+          "type": "null",
+          "title": "The Releasedate Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": null
+        },
+        "value": {
+          "id": "/properties/instance/properties/value",
+          "type": "null",
+          "title": "The Value Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": null
+        }
+      }
+    },
+    "invoice": {
+      "id": "/properties/invoice",
+      "type": "object",
+      "properties": {
+        "cia": {
+          "id": "/properties/invoice/properties/cia",
+          "type": "integer",
+          "title": "The Cia Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "branch": {
+          "id": "/properties/invoice/properties/branch",
+          "type": "integer",
+          "title": "The Branch Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "number": {
+          "id": "/properties/invoice/properties/number",
+          "type": "integer",
+          "title": "The Number Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "serie": {
+          "id": "/properties/invoice/properties/serie",
+          "type": "string",
+          "title": "The Serie Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "cdAccessKey": {
+          "id": "/properties/invoice/properties/cdAccessKey",
+          "type": "string",
+          "title": "The Cdaccesskey Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "issuanceDate": {
+          "id": "/properties/invoice/properties/issuanceDate",
+          "type": "string",
+          "title": "The Issuancedate Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "value": {
+          "id": "/properties/invoice/properties/value",
+          "type": "number",
+          "title": "The Value Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0.0
+        },
+        "status": {
+          "id": "/properties/invoice/properties/status",
+          "type": "string",
+          "title": "The Status Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        }
+      }
+    },
+    "order": {
+      "id": "/properties/order",
+      "type": "object",
+      "properties": {
+        "orderPartner": {
+          "id": "/properties/order/properties/orderPartner",
+          "type": "null",
+          "title": "The Orderpartner Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": null
+        },
+        "orderId": {
+          "id": "/properties/order/properties/orderId",
+          "type": "integer",
+          "title": "The Orderid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "storeDate": {
+          "id": "/properties/order/properties/storeDate",
+          "type": "string",
+          "title": "The Storedate Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "sigeDate": {
+          "id": "/properties/order/properties/sigeDate",
+          "type": "string",
+          "title": "The Sigedate Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "businessUnitId": {
+          "id": "/properties/order/properties/businessUnitId",
+          "type": "string",
+          "title": "The Businessunitid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "businessUnitName": {
+          "id": "/properties/order/properties/businessUnitName",
+          "type": "string",
+          "title": "The Businessunitname Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "channel": {
+          "id": "/properties/order/properties/channel",
+          "type": "string",
+          "title": "The Channel Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        }
+      }
+    },
+    "delivery": {
+      "id": "/properties/delivery",
+      "type": "object",
+      "properties": {
+        "deliveryId": {
+          "id": "/properties/delivery/properties/deliveryId",
+          "type": "integer",
+          "title": "The Deliveryid Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        }
+      }
+    },
+    "client": {
+      "id": "/properties/client",
+      "type": "object",
+      "properties": {
+        "name": {
+          "id": "/properties/client/properties/name",
+          "type": "string",
+          "title": "The Name Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": ""
+        },
+        "cpf": {
+          "id": "/properties/client/properties/cpf",
+          "type": "integer",
+          "title": "The Cpf Schema.",
+          "description": "An explanation about the purpose of this instance.",
+          "default": 0
+        },
+        "address": {
+          "id": "/properties/client/properties/address",
+          "type": "object",
+          "properties": {
+            "street": {
+              "id": "/properties/client/properties/address/properties/street",
+              "type": "string",
+              "title": "The Street Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "number": {
+              "id": "/properties/client/properties/address/properties/number",
+              "type": "string",
+              "title": "The Number Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "complement": {
+              "id": "/properties/client/properties/address/properties/complement",
+              "type": "string",
+              "title": "The Complement Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "zipCode": {
+              "id": "/properties/client/properties/address/properties/zipCode",
+              "type": "string",
+              "title": "The Zipcode Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "neighborhood": {
+              "id": "/properties/client/properties/address/properties/neighborhood",
+              "type": "string",
+              "title": "The Neighborhood Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "city": {
+              "id": "/properties/client/properties/address/properties/city",
+              "type": "string",
+              "title": "The City Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "state": {
+              "id": "/properties/client/properties/address/properties/state",
+              "type": "string",
+              "title": "The State Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            },
+            "reference": {
+              "id": "/properties/client/properties/address/properties/reference",
+              "type": "string",
+              "title": "The Reference Schema.",
+              "description": "An explanation about the purpose of this instance.",
+              "default": ""
+            }
+          }
+        }
+      }
+    },
+    "skus": {
+      "id": "/properties/skus",
+      "type": "array",
+      "items": {
+        "id": "/properties/skus/items",
+        "type": "object",
+        "properties": {
+          "sku": {
+            "id": "/properties/skus/items/properties/sku",
+            "type": "integer",
+            "title": "The Sku Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0
+          },
+          "description": {
+            "id": "/properties/skus/items/properties/description",
+            "type": "string",
+            "title": "The Description Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": ""
+          },
+          "unitValue": {
+            "id": "/properties/skus/items/properties/unitValue",
+            "type": "number",
+            "title": "The Unitvalue Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0
+          },
+          "quantity": {
+            "id": "/properties/skus/items/properties/quantity",
+            "type": "integer",
+            "title": "The Quantity Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0
+          },
+          "itemValue": {
+            "id": "/properties/skus/items/properties/itemValue",
+            "type": "number",
+            "title": "The Itemvalue Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0
+          },
+          "freightValue": {
+            "id": "/properties/skus/items/properties/freightValue",
+            "type": "integer",
+            "title": "The Freightvalue Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0
+          },
+          "discountValue": {
+            "id": "/properties/skus/items/properties/discountValue",
+            "type": "integer",
+            "title": "The Discountvalue Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0
+          },
+          "totalValue": {
+            "id": "/properties/skus/items/properties/totalValue",
+            "type": "number",
+            "title": "The Totalvalue Schema.",
+            "description": "An explanation about the purpose of this instance.",
+            "default": 0.0
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "operationType",
+    "partner",
+    "invoice",
+    "client",
+    "skus"
+  ]
+}

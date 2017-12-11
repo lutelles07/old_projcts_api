@@ -1,0 +1,2146 @@
+get_return_item: "
+                    SELECT DISTINCT NRO_SERIE, ETIQ_RG, ID_PED_ENTREGA, ID_PED_CLIENTE, DT_ENTREGA, FILIAL_DEV,
+                    FILIAL_ORIG, ID_NOTA_DEV, ID_NOTA_ORIG, SERIE_DEV, SERIE_ORIG, ID_ITEM, ID_INSTANCIA
+                    FROM Z_DADOS_FIX DF
+                    WHERE trim(DF.ETIQ_RG) = <ETIQ_RG>"
+
+get_return_item_id: "
+select etiq_rg,  a, b, c from (
+select at.rcat_id_instancia id_instancia,
+to_number(substr(at.rcat_id_etiqueta_orig,2,9)) a,
+esto.esto_situacao b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       at.rcat_id_motivo_inst id_motivo_inst,
+       mot.moti_nome motivo,
+       at.rcat_dt_criacao_inst dt_criacao_inst,
+       at.rcat_ult_ponto_ocorr ult_ponto,
+       at.rcat_ult_dt_ponto_ocorr dt_ult_ponto,
+       nvl(inst.inst_id_pedido_orig,
+           nfca.nfca_id_ped) id_ped_entrega,
+       nvl(inst.inst_ped_cliente,
+           nfca.nfca_ped_cliente) id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       at.rcat_id_item id_item,
+       at.rcat_id_ean id_ean,
+       nuse.nuse_nu_serie nro_serie,
+       to_char(at.rcat_id_etiqueta_orig,
+               '999999999999999999') etiq_rg,
+       at.rcat_id_filial_saida filial_orig,
+       at.rcat_id_nota_saida id_nota_orig,
+       at.rcat_serie_saida serie_orig,
+       at.rcat_dt_emissao_saida dt_emissao_orig,
+       at.rcat_id_filial_dev filial_dev,
+       at.rcat_id_nota_dev id_nota_dev,
+       at.rcat_serie_dev serie_dev,
+       at.rcat_dt_emissao_dev dt_emissao_dev
+  from wms_receb_conf_assistencia_tec at,
+       sac_instancia                  inst,
+       sac_motivo                     mot,
+       wms_receb_conferencia_cab      cab,
+       wms_receb_conferencia_det      det,
+       sac_rastreamento               rast,
+       nota_fiscal_cabecalho          nfca,
+       numero_serie                   nuse,
+       estoque                        esto,
+       item                            it
+ where at.rcat_id_instancia = inst.inst_id_instancia
+   and esto.esto_id_estoque = to_number(substr(at.rcat_id_etiqueta_orig,2,9))
+   and esto.esto_situacao =  'A'
+   and it.item_id_item = esto.esto_id_item
+   and esto.esto_id_planta not in (  select ro.roma_id_planta
+                        from referencia re, romaneio_detalhe rd, classe_local cl, romaneio ro
+                       where ro.roma_situacao not in ('LI', 'CA')
+                         and ro.roma_id_local_dest =esto.esto_id_local
+                         and cl.clal_id_claloc     = ro.roma_id_claloc
+                         and cl.clal_tp_local      = 'A'
+                         and cl.clal_in_picking    = 'M'
+                         and rd.romd_id_rom        = ro.roma_id_rom
+                         and re.refe_id_ref        = rd.romd_id_ref
+                         group by ro.roma_id_planta
+   )
+   and it.item_no_cub = 'S'
+   and at.rcat_id_filial_saida = nfca.nfca_id_filial
+   and at.rcat_id_nota_saida = nfca.nfca_id_nota
+   and at.rcat_serie_saida = nfca.nfca_serie
+   and at.rcat_id_conferencia_cab = cab.rcca_id_conferencia_cab
+   and cab.rcca_id_conferencia_cab = det.rcde_id_conferencia_cab
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and at.rcat_id_motivo_inst = mot.moti_id_motivo
+   and det.rcde_id_item = nuse.nuse_id_item(+)
+   and det.rcde_id_warranty = nuse.nuse_id_warranty(+)
+   and substr(det.rcde_etiqueta,2,9) = nuse.nuse_id_estoque(+)
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and det.rcde_etiqueta = at.rcat_id_etiqueta_orig
+   and rownum <= 100
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_ordem_de_coleta       orco,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       item it,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and orco.orco_id_instancia = inst.inst_id_instancia
+   and orco.orco_id_cia = nfca_e.nfca_id_cia
+   and orco.orco_id_filial = nfca_e.nfca_id_filial
+   and orco.orco_id_nota = nfca_e.nfca_id_nota
+   and orco.orco_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_retorno_venda         retv,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and retv.retv_id_instancia = inst.inst_id_instancia
+   and retv.retv_id_cia = nfca_e.nfca_id_cia
+   and retv.retv_id_filial = nfca_e.nfca_id_filial
+   and retv.retv_id_nota = nfca_e.nfca_id_nota
+   and retv.retv_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_postagem              post,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and post.post_id_instancia = inst.inst_id_instancia
+   and post.post_id_cia = nfca_e.nfca_id_cia
+   and post.post_id_filial = nfca_e.nfca_id_filial
+   and post.post_id_nota = nfca_e.nfca_id_nota
+   and post.post_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_ordem_de_coleta       orco,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       item it,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and it.item_id_item = ean.ean_id_sku
+   and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and orco.orco_id_instancia = inst.inst_id_instancia
+   and orco.orco_id_cia = nfca_e.nfca_id_cia
+   and orco.orco_id_filial = nfca_e.nfca_id_filial
+   and orco.orco_id_nota = nfca_e.nfca_id_nota
+   and orco.orco_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_retorno_venda         retv,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and it.item_id_item = ean.ean_id_sku
+   and it.item_no_cub = 'S'
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and retv.retv_id_instancia = inst.inst_id_instancia
+   and retv.retv_id_cia = nfca_e.nfca_id_cia
+   and retv.retv_id_filial = nfca_e.nfca_id_filial
+   and retv.retv_id_nota = nfca_e.nfca_id_nota
+   and retv.retv_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_postagem              post,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and post.post_id_instancia = inst.inst_id_instancia
+   and post.post_id_cia = nfca_e.nfca_id_cia
+   and post.post_id_filial = nfca_e.nfca_id_filial
+   and post.post_id_nota = nfca_e.nfca_id_nota
+   and post.post_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item ) d
+   where rownum <= 20"
+
+
+
+get_return_item_id_old1: "
+select etiq_rg,  a, b, c from (
+select at.rcat_id_instancia id_instancia,
+to_number(substr(at.rcat_id_etiqueta_orig,2,9)) a,
+esto.esto_situacao b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       at.rcat_id_motivo_inst id_motivo_inst,
+       mot.moti_nome motivo,
+       at.rcat_dt_criacao_inst dt_criacao_inst,
+       at.rcat_ult_ponto_ocorr ult_ponto,
+       at.rcat_ult_dt_ponto_ocorr dt_ult_ponto,
+       nvl(inst.inst_id_pedido_orig,
+           nfca.nfca_id_ped) id_ped_entrega,
+       nvl(inst.inst_ped_cliente,
+           nfca.nfca_ped_cliente) id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       at.rcat_id_item id_item,
+       at.rcat_id_ean id_ean,
+       nuse.nuse_nu_serie nro_serie,
+       to_char(at.rcat_id_etiqueta_orig,
+               '999999999999999999') etiq_rg,
+       at.rcat_id_filial_saida filial_orig,
+       at.rcat_id_nota_saida id_nota_orig,
+       at.rcat_serie_saida serie_orig,
+       at.rcat_dt_emissao_saida dt_emissao_orig,
+       at.rcat_id_filial_dev filial_dev,
+       at.rcat_id_nota_dev id_nota_dev,
+       at.rcat_serie_dev serie_dev,
+       at.rcat_dt_emissao_dev dt_emissao_dev
+  from wms_receb_conf_assistencia_tec at,
+       sac_instancia                  inst,
+       sac_motivo                     mot,
+       wms_receb_conferencia_cab      cab,
+       wms_receb_conferencia_det      det,
+       sac_rastreamento               rast,
+       nota_fiscal_cabecalho          nfca,
+       numero_serie                   nuse,
+       estoque                        esto,
+       item                            it
+ where at.rcat_id_instancia = inst.inst_id_instancia
+   and esto.esto_id_estoque = to_number(substr(at.rcat_id_etiqueta_orig,2,9))
+   and esto.esto_situacao =  'A'
+   and it.item_id_item = esto.esto_id_item
+   and esto.esto_id_planta not in (  select ro.roma_id_planta
+                        from referencia re, romaneio_detalhe rd, classe_local cl, romaneio ro
+                       where ro.roma_situacao not in ('LI', 'CA')
+                         and ro.roma_id_local_dest =esto.esto_id_local
+                         and cl.clal_id_claloc     = ro.roma_id_claloc
+                         and cl.clal_tp_local      = 'A'
+                         and cl.clal_in_picking    = 'M'
+                         and rd.romd_id_rom        = ro.roma_id_rom
+                         and re.refe_id_ref        = rd.romd_id_ref
+                         group by ro.roma_id_planta
+   )
+   and it.item_no_cub = 'S'
+   and at.rcat_id_filial_saida = nfca.nfca_id_filial
+   and at.rcat_id_nota_saida = nfca.nfca_id_nota
+   and at.rcat_serie_saida = nfca.nfca_serie
+   and at.rcat_id_conferencia_cab = cab.rcca_id_conferencia_cab
+   and cab.rcca_id_conferencia_cab = det.rcde_id_conferencia_cab
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and at.rcat_id_motivo_inst = mot.moti_id_motivo
+   and det.rcde_id_item = nuse.nuse_id_item(+)
+   and det.rcde_id_warranty = nuse.nuse_id_warranty(+)
+   and wwmart.fnc_decodifica_estoque_alt(det.rcde_etiqueta) = nuse.nuse_id_estoque(+)
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and det.rcde_etiqueta = at.rcat_id_etiqueta_orig
+   and rownum <= 100
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_ordem_de_coleta       orco,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       item it,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and orco.orco_id_instancia = inst.inst_id_instancia
+   and orco.orco_id_cia = nfca_e.nfca_id_cia
+   and orco.orco_id_filial = nfca_e.nfca_id_filial
+   and orco.orco_id_nota = nfca_e.nfca_id_nota
+   and orco.orco_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_retorno_venda         retv,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and retv.retv_id_instancia = inst.inst_id_instancia
+   and retv.retv_id_cia = nfca_e.nfca_id_cia
+   and retv.retv_id_filial = nfca_e.nfca_id_filial
+   and retv.retv_id_nota = nfca_e.nfca_id_nota
+   and retv.retv_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_postagem              post,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and post.post_id_instancia = inst.inst_id_instancia
+   and post.post_id_cia = nfca_e.nfca_id_cia
+   and post.post_id_filial = nfca_e.nfca_id_filial
+   and post.post_id_nota = nfca_e.nfca_id_nota
+   and post.post_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_ordem_de_coleta       orco,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       item it,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and it.item_id_item = ean.ean_id_sku
+   and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and orco.orco_id_instancia = inst.inst_id_instancia
+   and orco.orco_id_cia = nfca_e.nfca_id_cia
+   and orco.orco_id_filial = nfca_e.nfca_id_filial
+   and orco.orco_id_nota = nfca_e.nfca_id_nota
+   and orco.orco_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_retorno_venda         retv,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and it.item_id_item = ean.ean_id_sku
+   and it.item_no_cub = 'S'
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and retv.retv_id_instancia = inst.inst_id_instancia
+   and retv.retv_id_cia = nfca_e.nfca_id_cia
+   and retv.retv_id_filial = nfca_e.nfca_id_filial
+   and retv.retv_id_nota = nfca_e.nfca_id_nota
+   and retv.retv_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b, it.item_no_cub c,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_postagem              post,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref,
+       item it
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+ and it.item_id_item = ean.ean_id_sku
+ and it.item_no_cub = 'S'
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and post.post_id_instancia = inst.inst_id_instancia
+   and post.post_id_cia = nfca_e.nfca_id_cia
+   and post.post_id_filial = nfca_e.nfca_id_filial
+   and post.post_id_nota = nfca_e.nfca_id_nota
+   and post.post_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item ) d
+   where rownum <= 100
+"
+
+get_return_item_id_old2: "
+select etiq_rg,  a, b from (
+select at.rcat_id_instancia id_instancia,
+to_number(substr(at.rcat_id_etiqueta_orig,2,9)) a,
+esto.esto_situacao b,
+       inst.inst_id_categoria categoria_inst,
+       at.rcat_id_motivo_inst id_motivo_inst,
+       mot.moti_nome motivo,
+       at.rcat_dt_criacao_inst dt_criacao_inst,
+       at.rcat_ult_ponto_ocorr ult_ponto,
+       at.rcat_ult_dt_ponto_ocorr dt_ult_ponto,
+       nvl(inst.inst_id_pedido_orig,
+           nfca.nfca_id_ped) id_ped_entrega,
+       nvl(inst.inst_ped_cliente,
+           nfca.nfca_ped_cliente) id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       at.rcat_id_item id_item,
+       at.rcat_id_ean id_ean,
+       nuse.nuse_nu_serie nro_serie,
+       to_char(at.rcat_id_etiqueta_orig,
+               '999999999999999999') etiq_rg,
+       at.rcat_id_filial_saida filial_orig,
+       at.rcat_id_nota_saida id_nota_orig,
+       at.rcat_serie_saida serie_orig,
+       at.rcat_dt_emissao_saida dt_emissao_orig,
+       at.rcat_id_filial_dev filial_dev,
+       at.rcat_id_nota_dev id_nota_dev,
+       at.rcat_serie_dev serie_dev,
+       at.rcat_dt_emissao_dev dt_emissao_dev
+  from wms_receb_conf_assistencia_tec at,
+       sac_instancia                  inst,
+       sac_motivo                     mot,
+       wms_receb_conferencia_cab      cab,
+       wms_receb_conferencia_det      det,
+       sac_rastreamento               rast,
+       nota_fiscal_cabecalho          nfca,
+       numero_serie                   nuse,
+       estoque                        esto
+ where at.rcat_id_instancia = inst.inst_id_instancia
+   and esto.esto_id_estoque = to_number(substr(at.rcat_id_etiqueta_orig,2,9))
+   and esto.esto_situacao =  'A'
+   and at.rcat_id_filial_saida = nfca.nfca_id_filial
+   and at.rcat_id_nota_saida = nfca.nfca_id_nota
+   and at.rcat_serie_saida = nfca.nfca_serie
+   and at.rcat_id_conferencia_cab = cab.rcca_id_conferencia_cab
+   and cab.rcca_id_conferencia_cab = det.rcde_id_conferencia_cab
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and at.rcat_id_motivo_inst = mot.moti_id_motivo
+   and det.rcde_id_item = nuse.nuse_id_item(+)
+   and det.rcde_id_warranty = nuse.nuse_id_warranty(+)
+   and wwmart.fnc_decodifica_estoque_alt(det.rcde_etiqueta) = nuse.nuse_id_estoque(+)
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and det.rcde_etiqueta = at.rcat_id_etiqueta_orig
+   and rownum <= 100
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_ordem_de_coleta       orco,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and orco.orco_id_instancia = inst.inst_id_instancia
+   and orco.orco_id_cia = nfca_e.nfca_id_cia
+   and orco.orco_id_filial = nfca_e.nfca_id_filial
+   and orco.orco_id_nota = nfca_e.nfca_id_nota
+   and orco.orco_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_retorno_venda         retv,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and retv.retv_id_instancia = inst.inst_id_instancia
+   and retv.retv_id_cia = nfca_e.nfca_id_cia
+   and retv.retv_id_filial = nfca_e.nfca_id_filial
+   and retv.retv_id_nota = nfca_e.nfca_id_nota
+   and retv.retv_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_postagem              post,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is not null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and post.post_id_instancia = inst.inst_id_instancia
+   and post.post_id_cia = nfca_e.nfca_id_cia
+   and post.post_id_filial = nfca_e.nfca_id_filial
+   and post.post_id_nota = nfca_e.nfca_id_nota
+   and post.post_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_ordem_de_coleta       orco,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and orco.orco_id_instancia = inst.inst_id_instancia
+   and orco.orco_id_cia = nfca_e.nfca_id_cia
+   and orco.orco_id_filial = nfca_e.nfca_id_filial
+   and orco.orco_id_nota = nfca_e.nfca_id_nota
+   and orco.orco_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_retorno_venda         retv,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and retv.retv_id_instancia = inst.inst_id_instancia
+   and retv.retv_id_cia = nfca_e.nfca_id_cia
+   and retv.retv_id_filial = nfca_e.nfca_id_filial
+   and retv.retv_id_nota = nfca_e.nfca_id_nota
+   and retv.retv_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item
+union all
+select inst.inst_id_instancia id_instancia,
+null a, null b,
+       inst.inst_id_categoria categoria_inst,
+       inst.inst_id_motivo id_motivo_inst,
+       moti.moti_nome motivo,
+       inst.inst_dt_ocorrencia dt_criacao_inst,
+       sref.sref_id_ponto_ult ult_ponto,
+       sref.sref_dt_rastr_ult dt_ult_ponto,
+       pedc.pedc_id_pedido id_ped_entrega,
+       pedc.pedc_ped_cliente id_ped_cliente,
+       rast.rast_dt_rastreamento dt_entrega,
+       ddod.ddod_id_item id_item,
+       ean.ean_id_ean id_ean,
+       ddop.ddop_nu_serie nro_serie,
+       dvol.dvol_etiqueta etiq_rg,
+       nfca_s.nfca_id_filial filial_orig,
+       nfca_s.nfca_id_nota id_nota_orig,
+       nfca_s.nfca_serie serie_orig,
+       nfca_s.nfca_dt_emissao dt_emissao_orig,
+       nfca_e.nfca_id_filial filial_dev,
+       nfca_e.nfca_id_nota id_nota_dev,
+       nfca_e.nfca_serie serie_dev,
+       nfca_e.nfca_dt_emissao dt_emissao_dev
+  from dev_doc_cab               ddoc,
+       dev_doc_det               ddod,
+       dev_volume                dvol,
+       dev_doc_peca              ddop,
+       sac_instancia             inst,
+       sac_motivo                moti,
+       pedido_de_venda_cabecalho pedc,
+       nota_fiscal_cabecalho     nfca_s,
+       sac_rastreamento          rast,
+       sac_postagem              post,
+       nota_fiscal_cabecalho     nfca_e,
+       ean                       ean,
+       sac_referencia_documental sref
+ where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+   and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+   and dvol.dvol_id_doc = ddop.ddop_id_doc
+   and dvol.dvol_id_volume = ddop.ddop_id_volume
+   and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+   and moti.moti_id_motivo = inst.inst_id_motivo
+   and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+   and ddop.ddop_cod_etiqueta is null
+   and pedc.pedc_id_pedido =
+       nvl(ddoc.ddoc_id_pedido,
+           inst.inst_id_pedido_orig)
+   and nfca_s.nfca_id_cia = pedc_id_cia
+   and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+   and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+   and rast.rast_ped_cliente = inst.inst_ped_cliente
+   and rast.rast_id_pedido = inst.inst_id_pedido_orig
+   and rast.rast_id_fonte = 'GTE'
+   and rast.rast_id_ponto = 'ENT'
+   and ddod.ddod_id_item = ean.ean_id_sku
+   and sref.sref_id_instancia = inst.inst_id_instancia
+   and sref.sref_cod_cliente = inst.inst_id_cliente
+   and sref.sref_ped_cliente = inst.inst_ped_cliente
+   and sref.sref_id_pedido = inst.inst_id_pedido_orig
+   and sref.sref_id_cia = inst.inst_id_cia
+   and sref.sref_id_refdoc =
+       pc_sref.acha_refdoc(inst.inst_id_cliente,
+                           inst.inst_ped_cliente,
+                           inst.inst_id_pedido_orig,
+                           inst.inst_id_instancia,
+                           null,
+                           null,
+                           null)
+   and post.post_id_instancia = inst.inst_id_instancia
+   and post.post_id_cia = nfca_e.nfca_id_cia
+   and post.post_id_filial = nfca_e.nfca_id_filial
+   and post.post_id_nota = nfca_e.nfca_id_nota
+   and post.post_serie = nfca_e.nfca_serie
+   and ddop.ddop_id_doc = ddod.ddod_id_doc
+   and ddop.ddop_id_cia = ddod.ddod_id_cia
+   and ddop.ddop_id_item = ddod.ddod_id_item ) d
+   where rownum <= 100
+"
+
+
+
+
+get_return_item_id_old: "
+                        select etiq_rg  from (
+                        select at.rcat_id_instancia id_instancia,
+                            inst.inst_id_categoria categoria_inst,
+                            at.rcat_id_motivo_inst id_motivo_inst,
+                            mot.moti_nome motivo,
+                            at.rcat_dt_criacao_inst dt_criacao_inst,
+                            at.rcat_ult_ponto_ocorr ult_ponto,
+                            at.rcat_ult_dt_ponto_ocorr dt_ult_ponto,
+                            nvl(inst.inst_id_pedido_orig,
+                                nfca.nfca_id_ped) id_ped_entrega,
+                            nvl(inst.inst_ped_cliente,
+                                nfca.nfca_ped_cliente) id_ped_cliente,
+                            rast.rast_dt_rastreamento dt_entrega,
+                            at.rcat_id_item id_item,
+                            at.rcat_id_ean id_ean,
+                            nuse.nuse_nu_serie nro_serie,
+                            to_char(at.rcat_id_etiqueta_orig,
+                                    '999999999999999999') etiq_rg,
+                            at.rcat_id_filial_saida filial_orig,
+                            at.rcat_id_nota_saida id_nota_orig,
+                            at.rcat_serie_saida serie_orig,
+                            at.rcat_dt_emissao_saida dt_emissao_orig,
+                            at.rcat_id_filial_dev filial_dev,
+                            at.rcat_id_nota_dev id_nota_dev,
+                            at.rcat_serie_dev serie_dev,
+                            at.rcat_dt_emissao_dev dt_emissao_dev
+                        from wms_receb_conf_assistencia_tec at,
+                            sac_instancia                  inst,
+                            sac_motivo                     mot,
+                            wms_receb_conferencia_cab      cab,
+                            wms_receb_conferencia_det      det,
+                            sac_rastreamento               rast,
+                            nota_fiscal_cabecalho          nfca,
+                            numero_serie                   nuse
+                        where at.rcat_id_instancia = inst.inst_id_instancia
+                        and at.rcat_id_filial_saida = nfca.nfca_id_filial
+                        and at.rcat_id_nota_saida = nfca.nfca_id_nota
+                        and at.rcat_serie_saida = nfca.nfca_serie
+                        and at.rcat_id_conferencia_cab = cab.rcca_id_conferencia_cab
+                        and cab.rcca_id_conferencia_cab = det.rcde_id_conferencia_cab
+                        and rast.rast_ped_cliente = inst.inst_ped_cliente
+                        and rast.rast_id_pedido = inst.inst_id_pedido_orig
+                        and at.rcat_id_motivo_inst = mot.moti_id_motivo
+                        and det.rcde_id_item = nuse.nuse_id_item(+)
+                        and det.rcde_id_warranty = nuse.nuse_id_warranty(+)
+                        and wwmart.fnc_decodifica_estoque_alt(det.rcde_etiqueta) = nuse.nuse_id_estoque(+)
+                        and rast.rast_id_fonte = 'GTE'
+                        and rast.rast_id_ponto = 'ENT'
+                        and det.rcde_etiqueta = at.rcat_id_etiqueta_orig
+                        and rownum <= 100
+                        union all
+                        select inst.inst_id_instancia id_instancia,
+                            inst.inst_id_categoria categoria_inst,
+                            inst.inst_id_motivo id_motivo_inst,
+                            moti.moti_nome motivo,
+                            inst.inst_dt_ocorrencia dt_criacao_inst,
+                            sref.sref_id_ponto_ult ult_ponto,
+                            sref.sref_dt_rastr_ult dt_ult_ponto,
+                            pedc.pedc_id_pedido id_ped_entrega,
+                            pedc.pedc_ped_cliente id_ped_cliente,
+                            rast.rast_dt_rastreamento dt_entrega,
+                            ddod.ddod_id_item id_item,
+                            ean.ean_id_ean id_ean,
+                            ddop.ddop_nu_serie nro_serie,
+                            to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+                            nfca_s.nfca_id_filial filial_orig,
+                            nfca_s.nfca_id_nota id_nota_orig,
+                            nfca_s.nfca_serie serie_orig,
+                            nfca_s.nfca_dt_emissao dt_emissao_orig,
+                            nfca_e.nfca_id_filial filial_dev,
+                            nfca_e.nfca_id_nota id_nota_dev,
+                            nfca_e.nfca_serie serie_dev,
+                            nfca_e.nfca_dt_emissao dt_emissao_dev
+                        from dev_doc_cab               ddoc,
+                            dev_doc_det               ddod,
+                            dev_volume                dvol,
+                            dev_doc_peca              ddop,
+                            sac_instancia             inst,
+                            sac_motivo                moti,
+                            pedido_de_venda_cabecalho pedc,
+                            nota_fiscal_cabecalho     nfca_s,
+                            sac_rastreamento          rast,
+                            sac_ordem_de_coleta       orco,
+                            nota_fiscal_cabecalho     nfca_e,
+                            ean                       ean,
+                            sac_referencia_documental sref
+                        where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+                        and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+                        and dvol.dvol_id_doc = ddop.ddop_id_doc
+                        and dvol.dvol_id_volume = ddop.ddop_id_volume
+                        and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+                        and moti.moti_id_motivo = inst.inst_id_motivo
+                        and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+                        and ddop.ddop_cod_etiqueta is not null
+                        and pedc.pedc_id_pedido =
+                            nvl(ddoc.ddoc_id_pedido,
+                                inst.inst_id_pedido_orig)
+                        and nfca_s.nfca_id_cia = pedc_id_cia
+                        and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+                        and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+                        and rast.rast_ped_cliente = inst.inst_ped_cliente
+                        and rast.rast_id_pedido = inst.inst_id_pedido_orig
+                        and rast.rast_id_fonte = 'GTE'
+                        and rast.rast_id_ponto = 'ENT'
+                        and ddod.ddod_id_item = ean.ean_id_sku
+                        and sref.sref_id_instancia = inst.inst_id_instancia
+                        and sref.sref_cod_cliente = inst.inst_id_cliente
+                        and sref.sref_ped_cliente = inst.inst_ped_cliente
+                        and sref.sref_id_pedido = inst.inst_id_pedido_orig
+                        and sref.sref_id_cia = inst.inst_id_cia
+                        and sref.sref_id_refdoc =
+                            pc_sref.acha_refdoc(inst.inst_id_cliente,
+                                                inst.inst_ped_cliente,
+                                                inst.inst_id_pedido_orig,
+                                                inst.inst_id_instancia,
+                                                null,
+                                                null,
+                                                null)
+                        and orco.orco_id_instancia = inst.inst_id_instancia
+                        and orco.orco_id_cia = nfca_e.nfca_id_cia
+                        and orco.orco_id_filial = nfca_e.nfca_id_filial
+                        and orco.orco_id_nota = nfca_e.nfca_id_nota
+                        and orco.orco_serie = nfca_e.nfca_serie
+                        and ddop.ddop_id_doc = ddod.ddod_id_doc
+                        and ddop.ddop_id_cia = ddod.ddod_id_cia
+                        and ddop.ddop_id_item = ddod.ddod_id_item
+                        union all
+                        select inst.inst_id_instancia id_instancia,
+                            inst.inst_id_categoria categoria_inst,
+                            inst.inst_id_motivo id_motivo_inst,
+                            moti.moti_nome motivo,
+                            inst.inst_dt_ocorrencia dt_criacao_inst,
+                            sref.sref_id_ponto_ult ult_ponto,
+                            sref.sref_dt_rastr_ult dt_ult_ponto,
+                            pedc.pedc_id_pedido id_ped_entrega,
+                            pedc.pedc_ped_cliente id_ped_cliente,
+                            rast.rast_dt_rastreamento dt_entrega,
+                            ddod.ddod_id_item id_item,
+                            ean.ean_id_ean id_ean,
+                            ddop.ddop_nu_serie nro_serie,
+                            to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+                            nfca_s.nfca_id_filial filial_orig,
+                            nfca_s.nfca_id_nota id_nota_orig,
+                            nfca_s.nfca_serie serie_orig,
+                            nfca_s.nfca_dt_emissao dt_emissao_orig,
+                            nfca_e.nfca_id_filial filial_dev,
+                            nfca_e.nfca_id_nota id_nota_dev,
+                            nfca_e.nfca_serie serie_dev,
+                            nfca_e.nfca_dt_emissao dt_emissao_dev
+                        from dev_doc_cab               ddoc,
+                            dev_doc_det               ddod,
+                            dev_volume                dvol,
+                            dev_doc_peca              ddop,
+                            sac_instancia             inst,
+                            sac_motivo                moti,
+                            pedido_de_venda_cabecalho pedc,
+                            nota_fiscal_cabecalho     nfca_s,
+                            sac_rastreamento          rast,
+                            sac_retorno_venda         retv,
+                            nota_fiscal_cabecalho     nfca_e,
+                            ean                       ean,
+                            sac_referencia_documental sref
+                        where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+                        and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+                        and dvol.dvol_id_doc = ddop.ddop_id_doc
+                        and dvol.dvol_id_volume = ddop.ddop_id_volume
+                        and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+                        and moti.moti_id_motivo = inst.inst_id_motivo
+                        and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+                        and ddop.ddop_cod_etiqueta is not null
+                        and pedc.pedc_id_pedido =
+                            nvl(ddoc.ddoc_id_pedido,
+                                inst.inst_id_pedido_orig)
+                        and nfca_s.nfca_id_cia = pedc_id_cia
+                        and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+                        and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+                        and rast.rast_ped_cliente = inst.inst_ped_cliente
+                        and rast.rast_id_pedido = inst.inst_id_pedido_orig
+                        and rast.rast_id_fonte = 'GTE'
+                        and rast.rast_id_ponto = 'ENT'
+                        and ddod.ddod_id_item = ean.ean_id_sku
+                        and sref.sref_id_instancia = inst.inst_id_instancia
+                        and sref.sref_cod_cliente = inst.inst_id_cliente
+                        and sref.sref_ped_cliente = inst.inst_ped_cliente
+                        and sref.sref_id_pedido = inst.inst_id_pedido_orig
+                        and sref.sref_id_cia = inst.inst_id_cia
+                        and sref.sref_id_refdoc =
+                            pc_sref.acha_refdoc(inst.inst_id_cliente,
+                                                inst.inst_ped_cliente,
+                                                inst.inst_id_pedido_orig,
+                                                inst.inst_id_instancia,
+                                                null,
+                                                null,
+                                                null)
+                        and retv.retv_id_instancia = inst.inst_id_instancia
+                        and retv.retv_id_cia = nfca_e.nfca_id_cia
+                        and retv.retv_id_filial = nfca_e.nfca_id_filial
+                        and retv.retv_id_nota = nfca_e.nfca_id_nota
+                        and retv.retv_serie = nfca_e.nfca_serie
+                        and ddop.ddop_id_doc = ddod.ddod_id_doc
+                        and ddop.ddop_id_cia = ddod.ddod_id_cia
+                        and ddop.ddop_id_item = ddod.ddod_id_item
+                        union all
+                        select inst.inst_id_instancia id_instancia,
+                            inst.inst_id_categoria categoria_inst,
+                            inst.inst_id_motivo id_motivo_inst,
+                            moti.moti_nome motivo,
+                            inst.inst_dt_ocorrencia dt_criacao_inst,
+                            sref.sref_id_ponto_ult ult_ponto,
+                            sref.sref_dt_rastr_ult dt_ult_ponto,
+                            pedc.pedc_id_pedido id_ped_entrega,
+                            pedc.pedc_ped_cliente id_ped_cliente,
+                            rast.rast_dt_rastreamento dt_entrega,
+                            ddod.ddod_id_item id_item,
+                            ean.ean_id_ean id_ean,
+                            ddop.ddop_nu_serie nro_serie,
+                            to_char(ddop.ddop_cod_etiqueta)    etiq_rg,
+                            nfca_s.nfca_id_filial filial_orig,
+                            nfca_s.nfca_id_nota id_nota_orig,
+                            nfca_s.nfca_serie serie_orig,
+                            nfca_s.nfca_dt_emissao dt_emissao_orig,
+                            nfca_e.nfca_id_filial filial_dev,
+                            nfca_e.nfca_id_nota id_nota_dev,
+                            nfca_e.nfca_serie serie_dev,
+                            nfca_e.nfca_dt_emissao dt_emissao_dev
+                        from dev_doc_cab               ddoc,
+                            dev_doc_det               ddod,
+                            dev_volume                dvol,
+                            dev_doc_peca              ddop,
+                            sac_instancia             inst,
+                            sac_motivo                moti,
+                            pedido_de_venda_cabecalho pedc,
+                            nota_fiscal_cabecalho     nfca_s,
+                            sac_rastreamento          rast,
+                            sac_postagem              post,
+                            nota_fiscal_cabecalho     nfca_e,
+                            ean                       ean,
+                            sac_referencia_documental sref
+                        where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+                        and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+                        and dvol.dvol_id_doc = ddop.ddop_id_doc
+                        and dvol.dvol_id_volume = ddop.ddop_id_volume
+                        and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+                        and moti.moti_id_motivo = inst.inst_id_motivo
+                        and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+                        and ddop.ddop_cod_etiqueta is not null
+                        and pedc.pedc_id_pedido =
+                            nvl(ddoc.ddoc_id_pedido,
+                                inst.inst_id_pedido_orig)
+                        and nfca_s.nfca_id_cia = pedc_id_cia
+                        and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+                        and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+                        and rast.rast_ped_cliente = inst.inst_ped_cliente
+                        and rast.rast_id_pedido = inst.inst_id_pedido_orig
+                        and rast.rast_id_fonte = 'GTE'
+                        and rast.rast_id_ponto = 'ENT'
+                        and ddod.ddod_id_item = ean.ean_id_sku
+                        and sref.sref_id_instancia = inst.inst_id_instancia
+                        and sref.sref_cod_cliente = inst.inst_id_cliente
+                        and sref.sref_ped_cliente = inst.inst_ped_cliente
+                        and sref.sref_id_pedido = inst.inst_id_pedido_orig
+                        and sref.sref_id_cia = inst.inst_id_cia
+                        and sref.sref_id_refdoc =
+                            pc_sref.acha_refdoc(inst.inst_id_cliente,
+                                                inst.inst_ped_cliente,
+                                                inst.inst_id_pedido_orig,
+                                                inst.inst_id_instancia,
+                                                null,
+                                                null,
+                                                null)
+                        and post.post_id_instancia = inst.inst_id_instancia
+                        and post.post_id_cia = nfca_e.nfca_id_cia
+                        and post.post_id_filial = nfca_e.nfca_id_filial
+                        and post.post_id_nota = nfca_e.nfca_id_nota
+                        and post.post_serie = nfca_e.nfca_serie
+                        and ddop.ddop_id_doc = ddod.ddod_id_doc
+                        and ddop.ddop_id_cia = ddod.ddod_id_cia
+                        and ddop.ddop_id_item = ddod.ddod_id_item
+                        union all
+                        select inst.inst_id_instancia id_instancia,
+                            inst.inst_id_categoria categoria_inst,
+                            inst.inst_id_motivo id_motivo_inst,
+                            moti.moti_nome motivo,
+                            inst.inst_dt_ocorrencia dt_criacao_inst,
+                            sref.sref_id_ponto_ult ult_ponto,
+                            sref.sref_dt_rastr_ult dt_ult_ponto,
+                            pedc.pedc_id_pedido id_ped_entrega,
+                            pedc.pedc_ped_cliente id_ped_cliente,
+                            rast.rast_dt_rastreamento dt_entrega,
+                            ddod.ddod_id_item id_item,
+                            ean.ean_id_ean id_ean,
+                            ddop.ddop_nu_serie nro_serie,
+                            dvol.dvol_etiqueta etiq_rg,
+                            nfca_s.nfca_id_filial filial_orig,
+                            nfca_s.nfca_id_nota id_nota_orig,
+                            nfca_s.nfca_serie serie_orig,
+                            nfca_s.nfca_dt_emissao dt_emissao_orig,
+                            nfca_e.nfca_id_filial filial_dev,
+                            nfca_e.nfca_id_nota id_nota_dev,
+                            nfca_e.nfca_serie serie_dev,
+                            nfca_e.nfca_dt_emissao dt_emissao_dev
+                        from dev_doc_cab               ddoc,
+                            dev_doc_det               ddod,
+                            dev_volume                dvol,
+                            dev_doc_peca              ddop,
+                            sac_instancia             inst,
+                            sac_motivo                moti,
+                            pedido_de_venda_cabecalho pedc,
+                            nota_fiscal_cabecalho     nfca_s,
+                            sac_rastreamento          rast,
+                            sac_ordem_de_coleta       orco,
+                            nota_fiscal_cabecalho     nfca_e,
+                            ean                       ean,
+                            sac_referencia_documental sref
+                        where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+                        and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+                        and dvol.dvol_id_doc = ddop.ddop_id_doc
+                        and dvol.dvol_id_volume = ddop.ddop_id_volume
+                        and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+                        and moti.moti_id_motivo = inst.inst_id_motivo
+                        and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+                        and ddop.ddop_cod_etiqueta is null
+                        and pedc.pedc_id_pedido =
+                            nvl(ddoc.ddoc_id_pedido,
+                                inst.inst_id_pedido_orig)
+                        and nfca_s.nfca_id_cia = pedc_id_cia
+                        and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+                        and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+                        and rast.rast_ped_cliente = inst.inst_ped_cliente
+                        and rast.rast_id_pedido = inst.inst_id_pedido_orig
+                        and rast.rast_id_fonte = 'GTE'
+                        and rast.rast_id_ponto = 'ENT'
+                        and ddod.ddod_id_item = ean.ean_id_sku
+                        and sref.sref_id_instancia = inst.inst_id_instancia
+                        and sref.sref_cod_cliente = inst.inst_id_cliente
+                        and sref.sref_ped_cliente = inst.inst_ped_cliente
+                        and sref.sref_id_pedido = inst.inst_id_pedido_orig
+                        and sref.sref_id_cia = inst.inst_id_cia
+                        and sref.sref_id_refdoc =
+                            pc_sref.acha_refdoc(inst.inst_id_cliente,
+                                                inst.inst_ped_cliente,
+                                                inst.inst_id_pedido_orig,
+                                                inst.inst_id_instancia,
+                                                null,
+                                                null,
+                                                null)
+                        and orco.orco_id_instancia = inst.inst_id_instancia
+                        and orco.orco_id_cia = nfca_e.nfca_id_cia
+                        and orco.orco_id_filial = nfca_e.nfca_id_filial
+                        and orco.orco_id_nota = nfca_e.nfca_id_nota
+                        and orco.orco_serie = nfca_e.nfca_serie
+                        and ddop.ddop_id_doc = ddod.ddod_id_doc
+                        and ddop.ddop_id_cia = ddod.ddod_id_cia
+                        and ddop.ddop_id_item = ddod.ddod_id_item
+                        union all
+                        select inst.inst_id_instancia id_instancia,
+                            inst.inst_id_categoria categoria_inst,
+                            inst.inst_id_motivo id_motivo_inst,
+                            moti.moti_nome motivo,
+                            inst.inst_dt_ocorrencia dt_criacao_inst,
+                            sref.sref_id_ponto_ult ult_ponto,
+                            sref.sref_dt_rastr_ult dt_ult_ponto,
+                            pedc.pedc_id_pedido id_ped_entrega,
+                            pedc.pedc_ped_cliente id_ped_cliente,
+                            rast.rast_dt_rastreamento dt_entrega,
+                            ddod.ddod_id_item id_item,
+                            ean.ean_id_ean id_ean,
+                            ddop.ddop_nu_serie nro_serie,
+                            dvol.dvol_etiqueta etiq_rg,
+                            nfca_s.nfca_id_filial filial_orig,
+                            nfca_s.nfca_id_nota id_nota_orig,
+                            nfca_s.nfca_serie serie_orig,
+                            nfca_s.nfca_dt_emissao dt_emissao_orig,
+                            nfca_e.nfca_id_filial filial_dev,
+                            nfca_e.nfca_id_nota id_nota_dev,
+                            nfca_e.nfca_serie serie_dev,
+                            nfca_e.nfca_dt_emissao dt_emissao_dev
+                        from dev_doc_cab               ddoc,
+                            dev_doc_det               ddod,
+                            dev_volume                dvol,
+                            dev_doc_peca              ddop,
+                            sac_instancia             inst,
+                            sac_motivo                moti,
+                            pedido_de_venda_cabecalho pedc,
+                            nota_fiscal_cabecalho     nfca_s,
+                            sac_rastreamento          rast,
+                            sac_retorno_venda         retv,
+                            nota_fiscal_cabecalho     nfca_e,
+                            ean                       ean,
+                            sac_referencia_documental sref
+                        where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+                        and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+                        and dvol.dvol_id_doc = ddop.ddop_id_doc
+                        and dvol.dvol_id_volume = ddop.ddop_id_volume
+                        and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+                        and moti.moti_id_motivo = inst.inst_id_motivo
+                        and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+                        and ddop.ddop_cod_etiqueta is null
+                        and pedc.pedc_id_pedido =
+                            nvl(ddoc.ddoc_id_pedido,
+                                inst.inst_id_pedido_orig)
+                        and nfca_s.nfca_id_cia = pedc_id_cia
+                        and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+                        and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+                        and rast.rast_ped_cliente = inst.inst_ped_cliente
+                        and rast.rast_id_pedido = inst.inst_id_pedido_orig
+                        and rast.rast_id_fonte = 'GTE'
+                        and rast.rast_id_ponto = 'ENT'
+                        and ddod.ddod_id_item = ean.ean_id_sku
+                        and sref.sref_id_instancia = inst.inst_id_instancia
+                        and sref.sref_cod_cliente = inst.inst_id_cliente
+                        and sref.sref_ped_cliente = inst.inst_ped_cliente
+                        and sref.sref_id_pedido = inst.inst_id_pedido_orig
+                        and sref.sref_id_cia = inst.inst_id_cia
+                        and sref.sref_id_refdoc =
+                            pc_sref.acha_refdoc(inst.inst_id_cliente,
+                                                inst.inst_ped_cliente,
+                                                inst.inst_id_pedido_orig,
+                                                inst.inst_id_instancia,
+                                                null,
+                                                null,
+                                                null)
+                        and retv.retv_id_instancia = inst.inst_id_instancia
+                        and retv.retv_id_cia = nfca_e.nfca_id_cia
+                        and retv.retv_id_filial = nfca_e.nfca_id_filial
+                        and retv.retv_id_nota = nfca_e.nfca_id_nota
+                        and retv.retv_serie = nfca_e.nfca_serie
+                        and ddop.ddop_id_doc = ddod.ddod_id_doc
+                        and ddop.ddop_id_cia = ddod.ddod_id_cia
+                        and ddop.ddop_id_item = ddod.ddod_id_item
+                        union all
+                        select inst.inst_id_instancia id_instancia,
+                            inst.inst_id_categoria categoria_inst,
+                            inst.inst_id_motivo id_motivo_inst,
+                            moti.moti_nome motivo,
+                            inst.inst_dt_ocorrencia dt_criacao_inst,
+                            sref.sref_id_ponto_ult ult_ponto,
+                            sref.sref_dt_rastr_ult dt_ult_ponto,
+                            pedc.pedc_id_pedido id_ped_entrega,
+                            pedc.pedc_ped_cliente id_ped_cliente,
+                            rast.rast_dt_rastreamento dt_entrega,
+                            ddod.ddod_id_item id_item,
+                            ean.ean_id_ean id_ean,
+                            ddop.ddop_nu_serie nro_serie,
+                            dvol.dvol_etiqueta etiq_rg,
+                            nfca_s.nfca_id_filial filial_orig,
+                            nfca_s.nfca_id_nota id_nota_orig,
+                            nfca_s.nfca_serie serie_orig,
+                            nfca_s.nfca_dt_emissao dt_emissao_orig,
+                            nfca_e.nfca_id_filial filial_dev,
+                            nfca_e.nfca_id_nota id_nota_dev,
+                            nfca_e.nfca_serie serie_dev,
+                            nfca_e.nfca_dt_emissao dt_emissao_dev
+                        from dev_doc_cab               ddoc,
+                            dev_doc_det               ddod,
+                            dev_volume                dvol,
+                            dev_doc_peca              ddop,
+                            sac_instancia             inst,
+                            sac_motivo                moti,
+                            pedido_de_venda_cabecalho pedc,
+                            nota_fiscal_cabecalho     nfca_s,
+                            sac_rastreamento          rast,
+                            sac_postagem              post,
+                            nota_fiscal_cabecalho     nfca_e,
+                            ean                       ean,
+                            sac_referencia_documental sref
+                        where dvol.dvol_id_doc = ddoc.ddoc_id_doc
+                        and ddoc.ddoc_id_doc = ddod.ddod_id_doc
+                        and dvol.dvol_id_doc = ddop.ddop_id_doc
+                        and dvol.dvol_id_volume = ddop.ddop_id_volume
+                        and inst.inst_id_instancia = ddoc.ddoc_id_instancia
+                        and moti.moti_id_motivo = inst.inst_id_motivo
+                        and pedc.pedc_id_cia = ddoc.ddoc_id_cia
+                        and ddop.ddop_cod_etiqueta is null
+                        and pedc.pedc_id_pedido =
+                            nvl(ddoc.ddoc_id_pedido,
+                                inst.inst_id_pedido_orig)
+                        and nfca_s.nfca_id_cia = pedc_id_cia
+                        and nfca_s.nfca_id_filial = pedc.pedc_id_filial
+                        and nfca_s.nfca_id_ped = pedc.pedc_id_pedido
+                        and rast.rast_ped_cliente = inst.inst_ped_cliente
+                        and rast.rast_id_pedido = inst.inst_id_pedido_orig
+                        and rast.rast_id_fonte = 'GTE'
+                        and rast.rast_id_ponto = 'ENT'
+                        and ddod.ddod_id_item = ean.ean_id_sku
+                        and sref.sref_id_instancia = inst.inst_id_instancia
+                        and sref.sref_cod_cliente = inst.inst_id_cliente
+                        and sref.sref_ped_cliente = inst.inst_ped_cliente
+                        and sref.sref_id_pedido = inst.inst_id_pedido_orig
+                        and sref.sref_id_cia = inst.inst_id_cia
+                        and sref.sref_id_refdoc =
+                            pc_sref.acha_refdoc(inst.inst_id_cliente,
+                                                inst.inst_ped_cliente,
+                                                inst.inst_id_pedido_orig,
+                                                inst.inst_id_instancia,
+                                                null,
+                                                null,
+                                                null)
+                        and post.post_id_instancia = inst.inst_id_instancia
+                        and post.post_id_cia = nfca_e.nfca_id_cia
+                        and post.post_id_filial = nfca_e.nfca_id_filial
+                        and post.post_id_nota = nfca_e.nfca_id_nota
+                        and post.post_serie = nfca_e.nfca_serie
+                        and ddop.ddop_id_doc = ddod.ddod_id_doc
+                        and ddop.ddop_id_cia = ddod.ddod_id_cia
+                        and ddop.ddop_id_item = ddod.ddod_id_item ) d
+                        where rownum <= 100
+"

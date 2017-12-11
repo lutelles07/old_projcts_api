@@ -1,0 +1,4 @@
+get_icob_id_client: "select b.icob_id_cliente, b.ICOB_NUM_CONTRATO, s.iscb_num_subcontrato, s.ISCB_CLIENTE_AGENCIA
+from interface_contrato_b2b b, interface_sub_contrato_b2b s, TERCEIRO_CORPORATIVO t, SUB_CONTRATO_B2B sb
+where t.CLIE_ID_TERCEIRO = b.ICOB_ID_CLIENTE and s.ISCB_CLIENTE_AGENCIA = t.CLIE_ID_TERCEIRO   and sb.SCON_ID_CLIENTE = b.icob_id_cliente
+and sb.SCON_ID_CIA = b.ICOB_ID_CIA  and sb.SCON_NUM_CONTRATO = b.ICOB_NUM_CONTRATO  and rownum < 200"

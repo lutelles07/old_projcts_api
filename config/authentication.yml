@@ -1,0 +1,94 @@
+local:
+  habbit:
+    vhost: '/lockdown-qa'
+    port: '5672'
+    username: 'guest'
+    password: 'guest'
+    
+  valid:
+    username: lockdown
+    password: lockdown123
+
+  invalid_username:
+    username: lockabc
+    password: lockdown123
+
+  empty_username:
+    username:
+    password: lockdown123
+
+  invalid_password:
+    username: lockdown
+    password: lockdownabc
+
+  empty_password:
+    username: lockdown
+    password:
+
+qa:
+  token_cte:
+    username: aldebaran_user
+    password: aldebaran
+    grant_type: password
+    client_secret: f0357cca-60a4-4d40-9578-d8573dfeb351
+    client_id: aldebaran-test
+
+  habbit:
+    vhost: '/lockdown-qa'
+    port: '5672'
+    username: 'guest'
+    password: 'guest'
+
+  valid:
+    username: lockdown
+    password: lockdown123
+
+  invalid_username:
+    username: lockabc
+    password: lockdown123
+
+  empty_username:
+    username:
+    password: lockdown123
+
+  invalid_password:
+    username: lockdown
+    password: lockdownabc
+
+  empty_password:
+    username: lockdown
+    password:
+
+stg:
+  token_cte:
+    username: aldebaran_user
+    password: aldebaran
+    grant_type: password
+    client_secret: 95ec0df0-2fde-4cdc-a832-c8f79f0c87fe
+    client_id: aldebaran-test
+
+  habbit:
+    vhost: '/lockdown'
+    port: '15672'
+    username: 'guest'
+    password: 'guest'
+
+  valid:
+    username: lockdown
+    password: lockdown123
+
+  invalid_username:
+    username: lockabc
+    password: lockdown123
+
+  empty_username:
+    username:
+    password: lockdown123
+
+  invalid_password:
+    username: lockdown
+    password: lockdownabc
+
+  empty_password:
+    username: lockdown
+    password:

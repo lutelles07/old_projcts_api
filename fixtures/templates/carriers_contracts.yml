@@ -1,0 +1,65 @@
+create_carrier_contracts:
+  branch: 3
+  name: LDA EXPRESS NORMAL
+  isActive: true
+  effectiveDates:
+    start: '2013-11-30T00:00:00.000Z'
+    dueTo: '2017-12-01T00:00:00.000Z'
+  externalLabel: LDA EXPRESS NORMAL
+  freightCalculationDocument: N
+  freightPayer:
+    type: C
+    cnpj: 58735745000189
+  deliveryType: 1
+  transportType: 1
+  isShipment: true
+  exchangeGatheringOnDelivery: N
+  sourceId: GTE
+  invoiceIssuerCnpj: 25100223000402
+  isOrs: false
+  worksOn:
+    saturdays: false
+    sundays: false
+    holidays: true
+  isInternationalFreightForwarder: false
+  requestsIdentificationOfRecipient: true
+  issuesIncomingInvoiceOnGathering: false
+  displaysDeliveriesOnControlPanel: false
+  standardDeadlineForOccurrences: 1
+  freightValuesWithoutIcms: false
+  trackingUpdate:
+    user: USER01
+    dateTime: '2015-06-29T15:13:38'
+
+#------------------------------------------------------------------------------------
+update_carrier_contracts:
+  name: LDA EXPRESS NORMAL
+  isActive: true
+  effectiveDates:
+    start: '2013-11-30T00:00:00.000Z'
+    dueTo: '2017-12-01T00:00:00.000Z'
+  externalLabel: LDA EXPRESS NORMAL
+  freightCalculationDocument: N
+  freightPayer:
+    type: C
+    cnpj: 58735745000189
+  deliveryType: 1
+  transportType: 1
+  isShipment: true
+  exchangeGatheringOnDelivery: N
+  sourceId: GTE
+  invoiceIssuerCnpj: 25100223000402
+  isOrs: false
+  worksOn:
+    saturdays: false
+    sundays: false
+    holidays: true
+  isInternationalFreightForwarder: false
+  requestsIdentificationOfRecipient: true
+  issuesIncomingInvoiceOnGathering: false
+  displaysDeliveriesOnControlPanel: false
+  standardDeadlineForOccurrences: 1
+  freightValuesWithoutIcms: false
+  trackingUpdate:
+    user: USER01
+    dateTime: '2015-06-29T00:00:00.000Z'

@@ -1,0 +1,7 @@
+get_billing_types:  "select distinct timp_in_pedido id, timp_nome name from tipo_modelo_pedc where timp_in_pedido in('S','P') order by timp_in_pedido"
+
+get_shipping_categories:  "select distinct tien_id_tp_entrega id, tien_nome name from tipo_entrega where tien_id_tp_entrega in(1,2,3) order by tien_id_tp_entrega"	
+
+get_payment_methods:      "select distinct meip_id_meio_pagto id, meip_nome name from meio_pagamento where meip_id_meio_pagto in(1,2,4,5,7,11) order by meip_id_meio_pagto"
+
+get_sales_channels:       "select distinct cave_id_canal id, cave_nome name from canal_de_venda order by cave_id_canal"

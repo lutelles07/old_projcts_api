@@ -1,0 +1,53 @@
+post_megaroutes:
+  megaroutes:
+    -
+      id:
+      name:
+      externalDelivery:
+      absenceRegion:
+      sectionId: "BR"
+
+post_megaroutes_without_id:
+  megaroutes:
+    -
+      name:
+      externalDelivery:
+      absenceRegion:
+      sectionId: "BR"
+
+post_mega_route_without_name:
+  megaroutes:
+    -
+      id:
+      externalDelivery:
+      absenceRegion:
+      sectionId: "BR"
+
+post_mega_route_without_externalDelivery:
+  megaroutes:
+    -
+      id:
+      name:
+      absenceRegion:
+      sectionId: "BR"
+
+post_mega_route_without_absenceRegion:
+  megaroutes:
+    -
+      id:
+      name:
+      externalDelivery:
+      sectionId: "BR"
+      
+post_mega_route_without_sectionId:
+  megaroutes:
+    -
+      id:
+      name:
+      externalDelivery:
+      absenceRegion:
+put_megaroutes:
+  name:
+  externalDelivery:
+  absenceRegion:
+  sectionId: "BR"

@@ -1,0 +1,72 @@
+create_carrier:
+  name: TESTE TRANSP 1
+  label: TESTELOCK1
+  occurrenceType: P
+  isActive: true
+  insurance:
+    type: T
+    amount: 2.56
+  sourceId: GTE
+  transitTimeType: E
+  saveDate: '2017-11-06T00:00:00.000Z'
+  goals:
+    delay: 5.46
+    serviceLevel: 96.45
+  hasOwnFleet: true
+  freightCalculation:
+    gatheringRate:
+      considerOnFreight: false
+    adValorem:
+      considerOnFreight: false
+      type: N
+    toll:
+      considerOnFreight: false
+      type: N
+    minimumWeight:
+      considerOnFreight: false
+      type: N
+    cubedWeight:
+      considerOnFreight: false
+    minimumAmount:
+      considerOnFreight: false
+      type: N
+    redelivery:
+      type: P
+    return:
+      type: V
+    maximumAmountPerInvoice:
+      considerOnFreight: false
+  issuesCTRC: false
+  transportationMeanType: R
+  serviceMakerType: D
+  icmsTaxPayer: false
+  partnerData:
+    cnpj: 13130725000146
+    name: TESTE TRANSP 1
+    legalEntityType: 1
+    stateRegistration: '4573757'
+    notes: Observação sobre a transportadora
+    phoneNumber: '1956487577'
+    contact: Contato TESTE
+    email: teste@teste.com.br
+    address:
+      isActive: false
+      sequence: 1
+      type: F
+      street: Rua Ferreira Penteado
+      number: 324
+      zipCode: 13041901
+      neighborhood: Centro
+      complement: perto da Av. Irmã Serafina
+      reference: REF
+      cityNumber: '37690'
+      ean: 45676474
+    lockedFlag: false
+    registryFlag: false
+    wonCopyFlag: false
+    wonInterestFlag: false
+    interestFlag: false
+  trackingUpdate:
+    user: USER01
+    dateTime: '2015-06-29T00:00:00.000Z'
+    version: 2

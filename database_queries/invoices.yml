@@ -1,0 +1,11 @@
+get_invoice:    " SELECT NFCA_ID_CIA AS ID_CIA,
+                  NFCA_ID_FILIAL AS ID_FILIAL,
+                  NFCA_ID_NOTA AS NUMERO_NF,
+                  NFCA_SERIE AS SERIE_NF,
+                  NFCA_DT_EMISSAO AS DT_EMISSAO,
+                  TRIM(PC_NFME.FN_RETORNA_MSG_FISCAL(NFCA_ID_NOTA,
+                                                            NFCA_SERIE,
+                                                            NFCA_ID_CIA,
+                                                            NFCA_ID_FILIAL)) AS OBS_NF
+                  FROM NOTA_FISCAL_CABECALHO
+                  where rownum < 500"

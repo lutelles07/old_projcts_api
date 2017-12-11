@@ -1,0 +1,24 @@
+get_instance_id: "
+                    SELECT INST_ID_INSTANCIA
+                    FROM SAC_INSTANCIA JOIN SAC_MOTIVO ON (INST_ID_MOTIVO = MOTI_ID_MOTIVO)
+                    LEFT JOIN UNIDADE_DE_NEGOCIOS ON (UNIN_ID_UNINEG = INST_ID_UNINEG)
+                    WHERE ROWNUM < 1000"
+
+
+get_instance_data: "
+                    SELECT INST_ID_INSTANCIA id,
+                    INST_DT_OCORRENCIA createdDate,
+                    MOTI_NOME reason,
+                    INST_OBS observations,
+                    INST_ID_UNINEG businessUnit_id,
+                    UNIN_NOME businessUnit_name
+                    FROM SAC_INSTANCIA
+                    JOIN SAC_MOTIVO ON (INST_ID_MOTIVO = MOTI_ID_MOTIVO)
+                    LEFT JOIN UNIDADE_DE_NEGOCIOS ON (UNIN_ID_UNINEG = INST_ID_UNINEG)
+                    WHERE INST_ID_INSTANCIA = <instance-id>
+                    "
+
+get_variable_ID: "SELECT VARV_ID_VARIAVEL FROM SAC_VARIAVEIS"
+
+get_instance_value : "SELECT PC_INST_VAR.SUBSTITUI( '<instance-id>', '<variable-id>') AS VALUE_DESCRIPTION
+                      FROM DUAL"

@@ -1,0 +1,3 @@
+get_cte_cfop: "SELECT * FROM TABLE(pc_ald_cte.fnc_cte_cfop('<uf_origen>', '<uf_destino>', '<transfer>'))"
+
+get_cte_taxes: "SELECT * FROM TABLE(pc_ald_cte.fnc_cte_pis_cofins(<price>))"

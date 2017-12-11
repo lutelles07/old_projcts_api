@@ -1,0 +1,20 @@
+local:
+  adapter: oracle
+  database: nae1-qa-scan.qa.vmcommerce.intra:1521/WMBPR
+  username: swmart
+  password: swmart
+  encoding: utf8
+
+qa:
+  adapter: oracle
+  database: nae1-qa-scan.qa.vmcommerce.intra:1521/WMBPR
+  username: swmart
+  password: swmart
+  encoding: utf8
+
+stg:
+  adapter: oracle
+  database: vip-stg-ora-scan.stg.vmcommerce.intra:1521/WMBPR
+  username: lockdown_usr
+  password: lockdown_usr
+  encoding: utf8

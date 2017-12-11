@@ -1,0 +1,6 @@
+default: --no-source --color
+qa_jenkins:                       ENV="qa" debug=true  -f json -o execution_log.json --tags @ready
+qa:                               ENV="qa" debug=true
+local:                            ENV="local" debug=true
+stg_jenkins:                      ENV="stg" debug=false  -f json -o execution_log.json --tags @ready
+stg:                              ENV="stg" debug=true --tags ~@stg_lockdown_fora

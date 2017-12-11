@@ -1,0 +1,19 @@
+local:
+  id_sequential_rev:
+  id_sequential_rem:
+  id_sequential_chk:
+  id_alternative_chk: 1
+qa:
+  id_sequential_rev: 1676
+  id_sequential_rem: 1287
+  id_sequential_chk: 1677
+  id_alternative_chk: 1
+  id_alternative_rem: 25
+  id_alternative_rev: 1477
+stg:
+  id_sequential_rev: 1676
+  id_sequential_rem: 1287
+  id_sequential_chk: 1677
+  id_alternative_chk: 1666
+  id_alternative_rem: 1
+  id_alternative_rev: 148
