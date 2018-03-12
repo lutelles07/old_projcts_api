@@ -1,94 +1,94 @@
 local:
   habbit:
-    vhost: '/lockdown-qa'
+    vhost: '/username-qa'
     port: '5672'
-    username: 'guest'
-    password: 'guest'
-    
+    username: 'user'
+    password: 'pass'
+
   valid:
-    username: lockdown
-    password: lockdown123
+    username: username
+    password: username123
 
   invalid_username:
     username: lockabc
-    password: lockdown123
+    password: username123
 
   empty_username:
     username:
-    password: lockdown123
+    password: username123
 
   invalid_password:
-    username: lockdown
-    password: lockdownabc
+    username: username
+    password: usernameabc
 
   empty_password:
-    username: lockdown
+    username: username
     password:
 
 qa:
   token_cte:
-    username: aldebaran_user
-    password: aldebaran
+    username: username
+    password: username
     grant_type: password
     client_secret: f0357cca-60a4-4d40-9578-d8573dfeb351
-    client_id: aldebaran-test
+    client_id: username-test
 
   habbit:
-    vhost: '/lockdown-qa'
+    vhost: '/username-qa'
     port: '5672'
-    username: 'guest'
-    password: 'guest'
+    username: 'user'
+    password: 'pass'
 
   valid:
-    username: lockdown
-    password: lockdown123
+    username: username
+    password: username123
 
   invalid_username:
-    username: lockabc
-    password: lockdown123
+    username: username
+    password: username123
 
   empty_username:
     username:
-    password: lockdown123
+    password: username123
 
   invalid_password:
-    username: lockdown
-    password: lockdownabc
+    username: username
+    password: usernameabc
 
   empty_password:
-    username: lockdown
+    username: username
     password:
 
 stg:
   token_cte:
-    username: aldebaran_user
-    password: aldebaran
+    username: username
+    password: username
     grant_type: password
     client_secret: 95ec0df0-2fde-4cdc-a832-c8f79f0c87fe
-    client_id: aldebaran-test
+    client_id: username-test
 
   habbit:
-    vhost: '/lockdown'
+    vhost: '/username'
     port: '15672'
-    username: 'guest'
-    password: 'guest'
+    username: 'user'
+    password: 'pass'
 
   valid:
-    username: lockdown
-    password: lockdown123
+    username: username
+    password: username123
 
   invalid_username:
     username: lockabc
-    password: lockdown123
+    password: username123
 
   empty_username:
     username:
-    password: lockdown123
+    password: username123
 
   invalid_password:
-    username: lockdown
-    password: lockdownabc
+    username: username
+    password: usernameabc
 
   empty_password:
-    username: lockdown
+    username: username
     password:
